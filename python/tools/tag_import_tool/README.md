@@ -1,4 +1,4 @@
-#tag_import_tool
+# tag_import_tool
 
 This tool allows a user to mass-create new tags.  The script will read the desired values
 from a .csv file, and attempt to create a new tag for each row.
