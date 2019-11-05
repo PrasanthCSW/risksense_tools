@@ -11,8 +11,10 @@ The `risksense_api_python` module is required.
 #### CSV file
 An example .csv file has been provided in this folder. There should be one row per host. __Do not edit the headers of this file.__
 
+A `host` entry is required.  Other fields are optional depending on your need to update them.
+
 ##### Column Names:
- * `host` (Host IP Address or hostname.)
+ * `host` (Host IP Address or hostname. __REQUIRED__)
  * `os` (Operating System)
  * `manufacturer` (Manufactured By)
  * `model_id` (Model)
