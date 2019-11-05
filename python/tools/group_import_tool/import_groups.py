@@ -1,6 +1,6 @@
 """ *******************************************************************************************************************
 |
-|  Name        :  import_groups.py.py
+|  Name        :  import_groups.py
 |  Description :  Mass creation of groups in the RiskSense platform.
 |  Project     :  risksense_tools
 |  Copyright   :  (c) RiskSense, Inc. 
