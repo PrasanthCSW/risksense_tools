@@ -14,6 +14,8 @@ A repository of tools that interact with the RiskSense API.
   * A tool for the mass creation of new groups via the reading of a .csv file.
 * **hostfinding_report_from_saved_filter**
   * A tool for generating a csv report based upon a saved filter in the platform.
+* **asset_criticality_update**
+  * A tool for updating assets' criticalities via reading of a csv file.
 
 ## Requirements
 * A working [Python 3](https://python.org) installation is required.
@@ -21,6 +23,7 @@ A repository of tools that interact with the RiskSense API.
   * [TOML](https://pypi.org/project/toml/)
   * [Requests](https://pypi.org/project/requests/)
   * [Progressbar2](https://pypi.org/project/progressbar2/)
+  * [rich](https://pypi.org/project/rich/)
   
 The required packages can be installed with the following command:
 
