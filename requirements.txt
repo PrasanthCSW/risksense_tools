@@ -1,5 +1,4 @@
-toml==0.10.1
-requests==2.21.0
-urllib3==1.24.2
-
-risksense-api>=0.8.14
+toml==0.10.2
+requests==2.25.1
+urllib3==1.26.4
+progressbar2==3.53.1
