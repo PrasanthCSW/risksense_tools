@@ -54,8 +54,7 @@ class AfReportFromFilter:
         #  Get filter definition
         try:
             filter_defn = self.get_filter_defn(self.saved_filter_name)
-        except (rsapi.RequestFailed, rsapi.MaxRetryError, rsapi.StatusCodeError,
-                rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
+        except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
             print(ex)
             print()
             print("Unable to retrieve saved filter definition. Exiting.")
@@ -64,8 +63,7 @@ class AfReportFromFilter:
         #  Get app finding details, based on saved filter definition.
         try:
             returned_findings = self.rs.application_findings.search(filter_defn, page_size=1000)
-        except (rsapi.RequestFailed, rsapi.MaxRetryError, rsapi.StatusCodeError,
-                rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
+        except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
             print(ex)
             print()
             print("An exception has occurred.  Unable to retrieve hostfindings. Exiting.")
@@ -138,7 +136,6 @@ class AfReportFromFilter:
         :return:    Filter definition
         :rtype:     list
 
-        :raises rsapi.RequestFailed:
         :raises rsapi.MaxRetryError:
         :raises rsapi.StatusCodeError:
         :raises ValueError:
@@ -146,13 +143,11 @@ class AfReportFromFilter:
 
         try:
             returned_filters = self.rs.filters.list_appfinding_filters()
-        except (rsapi.RequestFailed, rsapi.MaxRetryError, rsapi.StatusCodeError,
-                rsapi.InsufficientPrivileges, rsapi.UserUnauthorized):
+            for item in returned_filters:
+                if item['name'] == filter_name:
+                    return item['filters']
+        except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.InsufficientPrivileges, rsapi.UserUnauthorized):
             raise
-
-        for item in returned_filters:
-            if item['name'] == filter_name:
-                return item['filters']
 
         raise ValueError(f"{filter_name} not found.")
 

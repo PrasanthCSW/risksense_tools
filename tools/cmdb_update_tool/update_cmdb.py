@@ -72,7 +72,8 @@ class CmdbUpdateTool:
                 job_id = self.send_update_request(**item)
                 print(f"Update request for {item['host']} successfully submitted as job {job_id}.")
                 success_counter += 1
-            except (rsapi.RequestFailed, rsapi.MaxRetryError, rsapi.StatusCodeError, ValueError) as ex:
+            except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.NoMatchFound,
+                    rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, Exception) as ex:
                 print(ex)
                 failure_counter += 1
 
@@ -239,7 +240,7 @@ class CmdbUpdateTool:
             # Send API update request
             try:
                 job_id = self.rs.hosts.update_hosts_cmdb(search_filter, **update_dict)
-            except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.RequestFailed) as ex:
+            except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, rsapi.NoMatchFound) as ex:
                 print(ex)
                 raise
         else:
