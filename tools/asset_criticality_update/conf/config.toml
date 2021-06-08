@@ -1,0 +1,24 @@
+
+# Update to reflect the URL you use when logging in to RiskSense
+platform_url = 'https://platform4.risksense.com'
+
+
+#  An API key generated for your user. This key will have the
+#  same permissions as your user. Instructions for generating
+#  an API key are found at:
+#  https://help.risksense.com/generating-an-api-token
+api_key = ''
+
+
+#  The .csv file to read to get the new asset cricicality for each
+#  host to be updated.
+file_to_read = 'criticalities_example.csv'
+
+
+#  If you are a single-client user, leave this setting alone.
+#  If you are a multiclient user, uncomment the client_id
+#  setting below, and specify the # the client ID that you
+#  wish to work with.
+
+#client_id = 12345
+
