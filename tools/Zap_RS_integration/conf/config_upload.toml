@@ -1,8 +1,8 @@
 
-platform = 'https://platform4.risksense.com'
+platform = 'https://xxxx.risksense.com'
 
 # The API Token can be generated in the RiskSense UI, under User Settings.
-api-key = '11eca5ba-52f3-a637-becf-06ddf54bb37e:T2hOS2tsSzNnTFAhQkhAQ2UzbDYvMktZNVczdiY0JEhDclNRREtTTFhIcEJJKnV3N0RadGovNFIlNEBZaUUjWg=='
+api-key = ''
 
 # Specify the path to the folder containing the files you wish to upload.
 # If you update this, please use the absolute path to your desired folder.
@@ -15,11 +15,11 @@ log_folder = 'logs'
 # Trigger URBA upon completion of upload processing.
 auto_urba = true
 
-# You may uncomment this parameter and enter the desired network ID for your upload here if you already know it.
-network_id = 259454
+# Create a network and update the same with the respective network ID
+network_id = 
 
 # You may uncomment this parameter and enter the desired client ID for your upload here if you already know it.
-client_id = 1373
+client_id = 
 
 use_proxy = false
 
@@ -31,7 +31,7 @@ use_proxy = false
 
 [proxy]
     host = ''
-    port = 3128
+    port = 
     authentication = false
     user = ''
     password = ''
