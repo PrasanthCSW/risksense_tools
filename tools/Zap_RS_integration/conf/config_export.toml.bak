@@ -1,0 +1,6 @@
+[platform]
+    "url" = 'https://platform4.risksense.com' # Add the url of the platform
+    "api_key" = '11eca5ba-52f3-a637-becf-06ddf54bb37e:T2hOS2tsSzNnTFAhQkhAQ2UzbDYvMktZNVczdiY0JEhDclNRREtTTFhIcEJJKnV3N0RadGovNFIlNEBZaUUjWg=='  # Add your API key here.
+    "client_id" = 1373 # Update to include your client ID here.
+	"assessment_name" = 'Assessment_zap_2022-03-24_1648137766.7973847'
+	"file_name" = ''
