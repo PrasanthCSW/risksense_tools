@@ -1,40 +1,38 @@
+# risksense_tools
+
+A repository of tools that interact with the RiskSense API.
+
+## Available Tools
+
+* **appfinding_report_from_saved_filter**
+  * A tool for generating a csv report based upon a saved filter in the platform.
+* **tag_import_tool**
+  * A tool for the mass creation of new tags via the reading of a .csv file.
+* **cmdb_update_tool**
+  * A tool for the mass update of hosts' CMDB information via the reading of a .csv file.
+* **group_import_tool**
+  * A tool for the mass creation of new groups via the reading of a .csv file.
+* **hostfinding_report_from_saved_filter**
+  * A tool for generating a csv report based upon a saved filter in the platform.
+* **asset_criticality_update**
+  * A tool for updating assets' criticalities via reading of a csv file.
+
 ## Requirements
+* A working [Python 3](https://python.org) installation is required.
+* Additionally, the following Python packages are required:
+  * [TOML](https://pypi.org/project/toml/)
+  * [Requests](https://pypi.org/project/requests/)
+  * [Progressbar2](https://pypi.org/project/progressbar2/)
+  * [rich](https://pypi.org/project/rich/)
+  
+The required packages can be installed with the following command:
 
- - Python 3
-    - This script has been tested using Python 3.7
- - Python Modules (recommend to install using pip):
-    - toml
-    - urllib3
-    - requests
-    - progressbar2
-    - zipfile
-    - datetime
-	- json
-	- time
-	- os
-	
-	
-# upload to platform
+    pip install -r requirements.txt
 
-Usage :
+***Or***, depending on your installation of Python/Pip:
 
-Run : python upload_to_platform.py
+    pip3 install -r requirements.txt
 
-Outcome : The scan results will be uploaded to the intended platform and the client. Once this is run , the data can be exported from Riksense by,
 
-# Export_RS_application_findings
-This is to export the Risksense Application findings using RS API's
-
-**Steps to export the results**
-
-* Provide the necessary parameters in config_export.toml file under conf/config_export.toml.
-  * Platform
-  * API key
-  * Client ID
-  * Assessment name
-  * File name to export
-* Run the export_findings.py.
-
-Usage: python export_findings.py 
-
-* You will see that the scan results with Assets and Findings will be placed in a folder with the current date
+## Installation
+Download zip file, copy the file to the desired location, and unzip.
