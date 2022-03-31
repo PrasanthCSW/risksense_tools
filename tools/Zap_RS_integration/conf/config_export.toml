@@ -1,5 +1,5 @@
 [platform]
-    "url" = 'https://platform4.risksense.com' # Add the url of the platform
+    "url" = 'https://xxxx.risksense.com' # Add the url of the platform
     "api_key" = ''  # Add your API key here.
     "client_id" = '' # Update to include your client ID here.
 	"assessment_name" = ''
