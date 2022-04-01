@@ -17,6 +17,13 @@
 # upload to platform
 
 Usage :
+Pre - requisites :
+
+* Provide the necessary parameters in the conf/config_upload.toml file , which are :
+	* Platform 
+	* Api Key
+	* Network ID
+	* Client ID
 
 Run : python upload_to_platform.py
 
