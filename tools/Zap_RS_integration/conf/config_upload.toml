@@ -16,10 +16,10 @@ log_folder = 'logs'
 auto_urba = true
 
 # Create a network and update the same with the respective network ID
-network_id = 
+network_id = ''
 
 # You may uncomment this parameter and enter the desired client ID for your upload here if you already know it.
-client_id = 
+client_id = ''
 
 use_proxy = false
 
