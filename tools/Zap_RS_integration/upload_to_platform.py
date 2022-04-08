@@ -125,7 +125,7 @@ class UploadToPlatform:
         else:
             print(f"There were no files that were successfully uploaded.  Exiting.")
             print()
-            input("Hit ENTER to close.")
+            #input("Hit ENTER to close.")
             exit(1)
 
         #  Begin monitoring processing of the uploaded files until complete
@@ -151,7 +151,7 @@ class UploadToPlatform:
         print(processing_finished_msg)
         logging.info("Processing of uploaded files has ended.  State: %s", process_state)
         print()
-        input("Hit ENTER to close.")
+        #input("Hit ENTER to close.")
 
     def validate_client_id(self, client):
 
@@ -224,7 +224,7 @@ class UploadToPlatform:
         if len(found_networks) != 1:
             print()
             print("The provided network ID appears to be invalid.  Exiting.")
-            input("Press ENTER to close.")
+            #input("Press ENTER to close.")
             print()
             exit(1)
 
@@ -294,7 +294,7 @@ class UploadToPlatform:
         if len(found_networks) == 0:
             print()
             print("No such network found.  Exiting.")
-            input("Press ENTER to close.")
+            #input("Press ENTER to close.")
             print()
             exit(1)
         elif len(found_networks) >= 1:
@@ -570,7 +570,7 @@ class UploadToPlatform:
         except (rsapi.RequestFailed, rsapi.StatusCodeError, rsapi.MaxRetryError, Exception):
             print(f"There was an unexpected issue starting the processing of your files.  Please log in"
                   f"to the platform and start the processing manually. ")
-            input("Hit ENTER to close.")
+            #input("Hit ENTER to close.")
             exit(1)
 
     def check_processing_state(self, upload_id):
@@ -589,7 +589,7 @@ class UploadToPlatform:
         except (rsapi.RequestFailed, rsapi.StatusCodeError, rsapi.MaxRetryError, Exception):
             print(f"An unexpected issue has occurred while trying to check the state of your upload.")
             print(f"Please log in to the platform to monitor the status of this upload.")
-            input("Hit ENTER to close.")
+            #input("Hit ENTER to close.")
             exit(1)
 
     def log_session_info(self, network_id, auto_urba, assessment_name, assessment_id,
@@ -644,7 +644,7 @@ class UploadToPlatform:
                   " - Provide as an argument when executing script."
         print(message)
         logging.info(message)
-        input("Please press ENTER to close.")
+        #input("Please press ENTER to close.")
         exit(1)
 
     @staticmethod
@@ -681,7 +681,7 @@ class UploadToPlatform:
             print(message)
             logging.info(message)
             print()
-            input("Please press ENTER to close.")
+            #input("Please press ENTER to close.")
             exit(1)
 
         return files, path_to_files
@@ -735,18 +735,18 @@ class UploadToPlatform:
         except TomlDecodeError as tde:
             print("An error occurred while trying to decode your config file.  Please check it for formatting errors.")
             print(f"\n{tde}\n")
-            input("Please press ENTER to close.")
+            #input("Please press ENTER to close.")
             exit(1)
         except FileNotFoundError as fnfe:
             print("An error occurred while trying to locate your config file. "
                   "Please verify that it exists in the \"conf\" folder.")
             print(f"\n{fnfe}\n")
-            input("Please press ENTER to close.")
+            #input("Please press ENTER to close.")
             exit(1)
         except Exception as ex:
             print("An unexpected error occurred while trying to read your config file.")
             print(f"\n{ex}\n")
-            input("Please press ENTER to close.")
+            #input("Please press ENTER to close.")
             exit(1)
 
         data = toml.loads(toml_data)
