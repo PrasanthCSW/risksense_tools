@@ -14,6 +14,7 @@ import requests
 import toml
 import zipfile
 from datetime import date
+import sys
 
 def initiate_export(platform, key, client, filename,assessment_name):
 
@@ -866,6 +867,7 @@ def initiate_export(platform, key, client, filename,assessment_name):
 }
 
     # Send API request to the platform
+    print(api_url)
     response = requests.post(api_url, headers=header, data=json.dumps(body))
 
     # If successful...
@@ -973,12 +975,19 @@ def main():
     assessment_name = ''.join(assessment_name)
     #print(assessment_name)
     # Set our variables based on what is read from the config file.
+
     rs_url = configuration['platform']['url']
     api_key = configuration['platform']['api_key']
     client_id = configuration['platform']['client_id']
-    #assessment_name = configuration['platform']['assessment_name']
     file_name = configuration['platform']['file_name']
-    
+    if rs_url == '':
+        rs_url = sys.argv[2]  
+    if api_key == '':   
+        api_key = sys.argv[4]
+    if client_id == '':   
+        client_id = sys.argv[6]
+    if file_name == '':   
+        file_name = sys.argv[8]   
 
 
     # getting the timestamp
