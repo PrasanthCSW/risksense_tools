@@ -21,7 +21,7 @@ auto_urba = false
 network_id = 261664
 
 # You may uncomment this parameter and enter the desired client ID for your upload here if you already know it.
-client_id = 
+client_id = ''
 
 use_proxy = false
 
