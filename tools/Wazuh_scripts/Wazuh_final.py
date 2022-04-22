@@ -59,7 +59,7 @@ count=0
 
 ##################################################################  Writing it to a file ########################################################################################
 
-with open('Vuln_Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
+with open('Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
     for splunk_data in data_list:
         string =  json.loads(str(splunk_data["result"]["_raw"]))
         writer = csv.writer(f)
