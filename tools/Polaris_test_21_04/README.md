@@ -8,13 +8,23 @@ Polaris Token , Project Name , Branch Name , File name to get the results , Asse
 
 # config.txt 
 
-<polaris token> --> Replace <polaris token> with the polaris token.
-<project name> --> Replace <project name> with the project name.
-<branch name> --> Replace <branch name> with the branch name.
-<comparison branch name> --> This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).
-file_name --> File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)
-Assessment_ --> Assessment name to be created in Risksense.(Replace this text with the Assessment name , not really necessary to change).
+"polaris token" -- Replace "polaris token" with the polaris token.
+"project name" -- Replace "project name" with the project name.
+"branch name" -- Replace "branch name" with the branch name.
+"comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).
+file_name -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)
+Assessment_ -- Assessment name to be created in Risksense.(Replace this text with the Assessment name , not really necessary to change).
 
+ * Example:
+  
+thisisthetoken1223421
+Centralcore.SM
+master
+SAST
+file_test
+Assessment_
+  
+  
 # upload_to_platform-master_branch\conf\config.toml
 
 Enter the Risksense Platform URL and API key in config.toml file under "upload_to_platform-master_branch\conf" ; 
