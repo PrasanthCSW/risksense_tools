@@ -17,11 +17,11 @@ Assessment_ -- Assessment name to be created in Risksense.(Replace this text wit
 
  * Example:
   
-thisisthetoken1223421
-Centralcore.SM
-master
-SAST
-file_test
+thisisthetoken1223421 
+Centralcore.SM 
+master 
+SAST 
+file_test 
 Assessment_
   
   
