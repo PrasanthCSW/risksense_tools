@@ -1,3 +1,14 @@
+""" *******************************************************************************************************************
+|
+|  Name         :  upload_to_platform.py
+|  Project      :  Upload to Platform
+|  Description  :  Uploads files to the RiskSense platform, and kicks off the processing of those files.
+|  Version      :  1.1
+|  Copyright    :  (c) RiskSense, Inc.
+|  License      :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
+|
+******************************************************************************************************************* """
+
 import time
 import shutil
 import datetime
@@ -5,8 +16,6 @@ import sys
 import os
 import logging
 import argparse
-import requests
-import json
 import toml
 from toml import TomlDecodeError
 import progressbar
@@ -27,7 +36,7 @@ class UploadToPlatform:
         today = datetime.date.today()
         current_time = time.time()
 
-        #print(f"\n\n         *** RiskSense -- {USER_AGENT_STRING} ***")
+        print(f"\n\n         *** RiskSense -- {USER_AGENT_STRING} ***")
         print('Upload scan files to the RiskSense platform via the RiskSense API.')
         print("------------------------------------------------------------------\n")
 
@@ -37,9 +46,8 @@ class UploadToPlatform:
 
         #  Process any args passed by the user, and set variables appropriately.
         args = self.arg_parser_setup(config)
-        #print(args)
         rs_platform, api_key, file_path, log_folder, auto_urba, client_id, network_id, \
-            use_proxy, proxy_host, proxy_port, proxy_auth, proxy_user, proxy_pwd , assessment_name = self.process_args(args)
+            use_proxy, proxy_host, proxy_port, proxy_auth, proxy_user, proxy_pwd = self.process_args(args)
 
         #  Specify Settings For the Log
         log_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), log_folder, 'uploads.log')
@@ -80,10 +88,9 @@ class UploadToPlatform:
 
         # Get info about files available to be uploaded.
         files, path_to_files = self.process_files(file_path)
-        print("The Assessment Name provided : " , assessment_name)
-        if assessment_name == '' :
-            assessment_name = input("Enter the name of the assesment:")
-        #assessment_name = "assmnt_" + str(today) + "_" + str(current_time)
+
+        #  Start defining parameters for new assessment
+        assessment_name = "assmnt_" + str(today) + "_" + str(current_time)
         assessment_start_date = str(today)
         assessment_notes = "Assessment generated via upload_to_platform.py."
         print()
@@ -146,6 +153,7 @@ class UploadToPlatform:
 
         """
         Validates that a client ID is associated with the specified API key.
+
         :param client:      Client ID to verify
         :type  client:      int
         """
@@ -170,6 +178,7 @@ class UploadToPlatform:
 
         """
         Validate the network ID provided by the user in the args/config
+
         :param network_id:  Network ID to validate
         :type  network_id:  int
         """
@@ -224,6 +233,7 @@ class UploadToPlatform:
         """
         Find the network IDs associated with a client, and have the user
         select which should be used for the upload.
+
         :return:    The Network ID to associate upload with.
         :rtype:     int
         """
@@ -304,7 +314,9 @@ class UploadToPlatform:
 
         """
         Process the arguments that were passed to the script into configuration variables.
+
         :param arguments:   Arguments received
+
         :return:    Configuration variable values
         """
         rs_platform = arguments.platform
@@ -319,7 +331,6 @@ class UploadToPlatform:
         proxy_auth = arguments.proxy_auth
         proxy_user = arguments.proxy_user
         proxy_pwd = arguments.proxy_pwd
-        assessment_name= arguments.assessment_name
 
         if api_key == "":
             self.no_api_key()
@@ -336,16 +347,15 @@ class UploadToPlatform:
 
         if network_id is not None:
             network_id = int(network_id)
-        
- 
 
         return rs_platform, api_key, file_path, log_folder, auto_urba, client_id, network_id, \
-               use_proxy, proxy_host, proxy_port, proxy_auth, proxy_user, proxy_pwd,assessment_name
+               use_proxy, proxy_host, proxy_port, proxy_auth, proxy_user, proxy_pwd,
 
     def get_client_id(self):
 
         """
         Get the client IDs associated with the specified API key, and have the user select one.
+
         :return:    The client ID to be used while uploading the files.
         :rtype:     int
         """
@@ -374,6 +384,7 @@ class UploadToPlatform:
 
         """
         Get the count of available networks
+
         :return:    Count of available networks
         :rtype:     int
         """
@@ -409,12 +420,16 @@ class UploadToPlatform:
 
         """
         Create a new assessment
+
         :param assessment_name:
         :type  assessment_name:
+
         :param assessment_start_date:
         :type  assessment_start_date:
+
         :param assessment_notes:
         :type  assessment_notes:
+
         :return:
         :rtype:
         """
@@ -448,12 +463,16 @@ class UploadToPlatform:
 
         """
         Create a new upload
+
         :param upload_name:     Name for new upload
         :type  upload_name:     str
+
         :param assessment_id:   Assessment ID to associate upload with
         :type  assessment_id:   int
+
         :param network_id:      Network ID to associate upload with
         :type  network_id:      int
+
         :return:    The new upload's ID
         :rtype:     int
         """
@@ -488,12 +507,16 @@ class UploadToPlatform:
 
         """
         Upload files to RiskSense.
+
         :param upload_id:       Upload ID
         :type  upload_id:       int
+
         :param files:           List of dicts indicating files to upload
         :type  files:           list
+
         :param path_to_files:   Path to files
         :type  path_to_files:   Path to location on disk where files exist
+
         :return:    Number of upload errors that occurred
         :rtype:     int
         """
@@ -544,8 +567,10 @@ class UploadToPlatform:
 
         """
         Begin processing the uploaded files
+
         :param upload_id:   Upload ID
         :type  upload_id:   int
+
         :param auto_urba:   Auto URBA
         :type  auto_urba:   bool
         """
@@ -569,8 +594,10 @@ class UploadToPlatform:
 
         """
         Check the processing state of the upload.
+
         :param upload_id:   Upload ID
         :type  upload_id:   int
+
         :return:    Process state
         :rtype:     str
         """
@@ -589,22 +616,31 @@ class UploadToPlatform:
 
         """
         Log the info for the upload session.
+
         :param network_id:              Network ID
         :type  network_id:              int
+
         :param auto_urba:               Auto URBA
         :type  auto_urba:               bool
+
         :param assessment_name:         Assessment Name
         :type  assessment_name:         str
+
         :param assessment_id:           Assessment ID
         :type  assessment_id:           int
+
         :param assessment_start_date:   Assessment Start Date
         :type  assessment_start_date:   str
+
         :param assessment_notes:        Assessment Notes
         :type  assessment_notes:        str
+
         :param upload_id:               Upload ID
         :type  upload_id:               int
+
         :param path_to_files:           Path to folder containing files
         :type  path_to_files:           str
+
         :param files:                   List of files
         :type  files:                   list
         """
@@ -644,8 +680,10 @@ class UploadToPlatform:
 
         """
         Check for files to upload, and compile the information
+
         :param file_path:   Location to check for files.
         :type  file_path:   str
+
         :return:    list of files, and full path on disk to the folder they are in
         :rtype:     tuple
         """
@@ -683,8 +721,10 @@ class UploadToPlatform:
 
         """
         Set up the valid args for the arg parser
+
         :param config:  Config variables
         :type  config:  dict
+
         :return:    Args
         :rtype:
         """
@@ -695,16 +735,15 @@ class UploadToPlatform:
         parser.add_argument('-a', '--api_key', help='API Key', type=str, required=False, default=config['api-key'])
         parser.add_argument('-f', '--files_folder', help='Path to folder containing scan files', type=str, required=False, default=config['files_folder'])
         parser.add_argument('-l', '--log_folder', help='Path to folder to write log', type=str, required=False, default=config['log_folder'])
-        parser.add_argument('-n', '--network_id', help='Network ID', type=int, required=False, default=config['network_id'])
         parser.add_argument('-u', '--auto_urba', help='Run auto-URBA?', type=str, choices=["true", "false"], required=False, default=config['auto_urba'])
         parser.add_argument('-c', '--client_id', help='Client ID', type=int, required=False, default=config['client_id'])
+        parser.add_argument('-n', '--network_id', help='Network ID', type=int, required=False, default=config['network_id'])
         parser.add_argument('--use_proxy', help='Use Proxy?', type=bool, required=False, default=config['use_proxy'])
         parser.add_argument('--proxy_host', help='Proxy host', type=str, required=False, default=config['proxy']['host'])
         parser.add_argument('--proxy_port', help='Proxy port', type=int, required=False, default=config['proxy']['port'])
         parser.add_argument('--proxy_auth', help='Use proxy authentication?', type=bool, required=False, default=config['proxy']['authentication'])
         parser.add_argument('--proxy_user', help='Proxy username', type=str, required=False, default=config['proxy']['user'])
         parser.add_argument('--proxy_pwd', help='Proxy password', type=str, required=False, default=config['proxy']['password'])
-        parser.add_argument('-as','--assessment_name', help='Assessment Name', type=str, required=False, default=config['assessment_name'])
 
         args = parser.parse_args()
 
@@ -715,8 +754,10 @@ class UploadToPlatform:
 
         """
         Reads a TOML-formatted configuration file.
+
         :param filename:    Path to the TOML-formatted file to be read.
         :type  filename:    str
+
         :return:  Values contained in config file.
         :rtype:   dict
         """
@@ -745,35 +786,9 @@ class UploadToPlatform:
         data = toml.loads(toml_data)
 
         if "client_id" not in data:
-            data.update({"client_id": None})    
+            data.update({"client_id": None})
         if "network_id" not in data:
-            net_name = input("Enter the name of the network you might want to create (or) passby(press ENTER) if you can use any existing ones: ")
-            url = "{0}/api/v1/client/{1}/network".format(data['platform'],data['client_id'])
-            if "api-key" in data and net_name != '':
-                data.update({"apikey": data['api-key']})
-                payload = json.dumps({
-                  "name": net_name,
-                  "type": "IP"
-                })
-                headers = {
-                  'Accept': 'application/json',
-                  'x-api-key':  data['api-key'],
-                  'Content-Type': 'application/json'
-                }
-                
-                response = requests.request("POST", url, headers=headers, data=payload)
-                #print (response.status_code,type(net_name))
-                if response.status_code == 201:
-                    print("\n\nThe network is created!!\n")
-                    result = json.loads(response.text)
-                    data.update({"network_id": result['id'] })
-                else: 
-                    #UploadToPlatform.validate_client_id(self,net_name)
-                    print("\n\nThe given network already exists!\n")
-                    conf = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'conf', 'config.toml')
-                    UploadToPlatform.read_config_file(conf)
-        
-        data.update({"network_id": None})
+            data.update({"network_id": None})
 
         return data
 
@@ -787,3 +802,20 @@ if __name__ == "__main__":
         print("KeyboardInterrupt detected.  Exiting...")
         print()
         sys.exit(0)
+
+
+"""
+   Copyright 2020 RiskSense, Inc.
+   
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at:
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
