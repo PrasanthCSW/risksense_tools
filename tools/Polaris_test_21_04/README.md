@@ -8,12 +8,12 @@ Polaris Token , Project Name , Branch Name , File name to get the results , Asse
 
 # config.txt 
 
-<polaris token>
-<project name>
-<branch name>
-<comparison branch name> --> This is optional, to be left blank if comparison not needed.
-file_name --> File name to which the data is exported to from the Synopsys polaris.
-Assessment_ --> Assessment name to be created in Risksense.
+<polaris token> --> Replace <polaris token> with the polaris token.
+<project name> --> Replace <project name> with the project name.
+<branch name> --> Replace <branch name> with the branch name.
+<comparison branch name> --> This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).
+file_name --> File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)
+Assessment_ --> Assessment name to be created in Risksense.(Replace this text with the Assessment name , not really necessary to change).
 
 # upload_to_platform-master_branch\conf\config.toml
 
@@ -21,13 +21,16 @@ Enter the Risksense Platform URL and API key in config.toml file under "upload_t
 
 * https://platform4.risksense.com 
 * API Key - 'xxxx'   ---> to be generated in Risksense platform for a user.
+* Client ID - 1373 ( Ivanti DevSecOps client )
 
 
 Once these values are entered, you can run the script as;
 
 # Usage 
 
-polaris.bat <option>
+polaris.bat "option"
+  
+  * Example : polaris.bat C
 
 'option' can be , 
 
