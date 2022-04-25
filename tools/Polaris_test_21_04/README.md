@@ -8,8 +8,8 @@ Polaris Token , Project Name , Branch Name , File name to get the results , Asse
 
 # config.txt 
 
-"polaris token" -- Replace "polaris token" with the polaris token.__
-"project name" -- Replace "project name" with the project name.__
+"polaris token" -- Replace "polaris token" with the polaris token.</br>
+"project name" -- Replace "project name" with the project name.</br>
 "branch name" -- Replace "branch name" with the branch name.
 "comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).
 file_name -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)
