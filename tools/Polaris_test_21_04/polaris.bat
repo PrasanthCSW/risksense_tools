@@ -7,9 +7,9 @@
 
 @echo off
 
-For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%a-%%b)
-For /f "tokens=1-3 delims=/:/ " %%a in ('time /t') do (set mytime=%%a-%%b-%%c)
-set mytime=%mytime: =% 
+set "Timestamp="
+for /f %%x in ('wmic path win32_utctime get /format:list ^| findstr "="') do set %%x
+set "Timestamp=%Year%_%Month%_%Day%_%Hour%_%Minute%"
 
 :: configuration part to be defined by the user from config.txt file
 
@@ -24,7 +24,8 @@ for /F "skip=5" %%i in (config.txt) do if not defined compare set "compare=%%i"
 set "file="
 for /F "skip=6" %%i in (config.txt) do if not defined file set "file=%%i"
 set "assessment="
-for /F "skip=7" %%i in (config.txt) do if not defined assessment set "assessment=%%i%mydate%_%mytime%"
+for /F "skip=7" %%i in (config.txt) do if not defined assessment set "assessment=%%i%Timestamp%"
+echo %assessment%
 
 
 if "%~1" == "C" goto closed
