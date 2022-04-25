@@ -10,19 +10,19 @@ Polaris Token , Project Name , Branch Name , File name to get the results , Asse
 
 "polaris token" -- Replace "polaris token" with the polaris token.</br>
 "project name" -- Replace "project name" with the project name.</br>
-"branch name" -- Replace "branch name" with the branch name.
-"comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).
-file_name -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)
-Assessment_ -- Assessment name to be created in Risksense.(Replace this text with the Assessment name , not really necessary to change).
+"branch name" -- Replace "branch name" with the branch name.</br>
+"comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).</br>
+file_name -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)</br>
+Assessment_ -- Assessment name to be created in Risksense.(Replace this text with the Assessment name , not really necessary to change).</br>
 
  * Example:
   
-thisisthetoken1223421 
-Centralcore.SM 
-master 
-SAST 
-file_test 
-Assessment_
+thisisthetoken1223421 </br>
+Centralcore.SM </br>
+master </br>
+SAST </br>
+file_test </br>
+Assessment_ </br>
   
   
 # upload_to_platform-master_branch\conf\config.toml
@@ -50,7 +50,7 @@ polaris.bat "option"
 
 Developed by;
 
-Prasanth Bharadhwaaj ,
-Yugesh ,
-Jai Balaji ,
+Prasanth Bharadhwaaj ,</br>
+Yugesh ,</br>
+Jai Balaji ,</br>
 Security Analyst - CSW.
