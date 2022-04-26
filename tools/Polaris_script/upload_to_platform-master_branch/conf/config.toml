@@ -17,10 +17,12 @@ assessment_name = ''
 # Trigger URBA upon completion of upload processing.
 auto_urba = false
 
-# You may uncomment this parameter and enter the desired network ID for your upload here if you already know it.
-#network_id = 261664 
 
-# Finding Network ID ;  You can find the network id by using POST API (https://xxxx.risksense.com/api/v1/client/{client_id}/network)  Json Body : {"name": "wazuh_final1","type": "IP"} , Header ; Key - x-api-key , Value - xxxx
+# Finding Network ID ;  You can find the network id by making a POST request using API (https://xxxx.risksense.com/api/v1/client/{client_id}/network)  Json Body : {"name": "wazuh_final1","type": "IP"} , Header ; Key - x-api-key , Value - xxxx
+
+# You may uncomment this parameter and enter the desired network ID for your upload here if you already know it.
+#network_id = 123667 
+
 
 # You may uncomment this parameter and enter the desired client ID for your upload here if you already know it.
 #client_id = 
