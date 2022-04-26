@@ -4,7 +4,7 @@ This script is used to pull the data from Synopsys Polaris and push it to the Ri
 
 # User inputs
 
-Polaris Token , Project Name , Branch Name , File name to get the results , Assessment name to be provided in config.txt file in order.
+Polaris Token , Project Name , Branch Name , File name to get the results to be provided in config.txt file in order.
 
 # config.txt 
 
@@ -12,7 +12,7 @@ Polaris Token , Project Name , Branch Name , File name to get the results , Asse
 "project name" -- Replace "project name" with the project name.</br>
 "branch name" -- Replace "branch name" with the branch name.</br>
 "comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).</br>
-file_name -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)</br>
+"file_name" -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)</br>
 
 
  * Example:
@@ -22,7 +22,6 @@ Centralcore.SM </br>
 master </br>
 SAST </br>
 file_test </br>
-
   
   
 # upload_to_platform-master_branch\conf\config.toml

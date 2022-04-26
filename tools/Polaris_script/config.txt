@@ -1,10 +1,10 @@
-======================== Define the parameters in the file by Polaris token , project name , branch name , comparison branch name , file name and assessment name to be created in Risksense ========================
+======================== Define the parameters in the file by Polaris token , project name , branch name , comparison branch name and file name to be created in Risksense ========================
 
-nbabq219r101h7uj0stql8evvav2mill8217pn009stiticst68g
-IntegrationServer
-master
-Coverity
-file_test
+"polaris token"
+"project name"
+"branch name"
+"comparison branch name" 
+"file_name"
 
 ==================================================================================================================================================================================
 

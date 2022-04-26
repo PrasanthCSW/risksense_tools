@@ -1,8 +1,8 @@
 
-platform = 'https://platform4.risksense.com'
+platform = 'https://xxxx.risksense.com'
 
 # The API Token can be generated in the RiskSense UI, under User Settings.
-api-key = '11eca9b4-f5be-9d05-becf-06ddf54bb37e:JDclI21ydTRUa18hdWhYY1ZULUdeRk1vYSpuJUdUTSpHUV9CSXFUSXQ1Z0A3JXlLdXEyckd3L2Zab0c0YyNWUQ=='
+api-key = ''
 
 # Specify the path to the folder containing the files you wish to upload.
 # If you update this, please use the absolute path to your desired folder.
@@ -20,11 +20,11 @@ auto_urba = false
 # Finding Network ID ;  You can find the network id by using POST API (https://xxxx.risksense.com/api/v1/client/{client_id}/network)  Json Body : {"name": "wazuh_final1","type": "IP"} , Header ; Key - x-api-key , Value - xxxx
 
 # You may uncomment this parameter and enter the desired network ID for your upload here if you already know it.
-network_id = 262688 
+#network_id = 12345
 
 
 # You may uncomment this parameter and enter the desired client ID for your upload here if you already know it.
-client_id = 1373 
+#client_id = 1234
 
 use_proxy = false
 
