@@ -46,7 +46,7 @@ class UploadToPlatform:
         conf_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'conf', 'config_upload.toml')
         config = self.read_config_file(conf_file)
 
-        #  Process any args passed by the user, and set variables appropriately.
+        #  any args passed by the user, and set variables appropriately.
         args = self.arg_parser_setup(config)
         rs_platform, api_key, file_path, log_folder, auto_urba, client_id, network_id, \
             use_proxy, proxy_host, proxy_port, proxy_auth, proxy_user, proxy_pwd = self.process_args(args)
@@ -137,7 +137,7 @@ class UploadToPlatform:
             process_state = self.check_processing_state(upload_id)
 
             if process_state in ["COMPLETE", "COMPLETE_WITH_FAILURES", "ERROR",
-                                 "FAILED", "PARSE_FAILED", "AGGREGATION_FAILED"]:
+                                 "FAILED", "PARSE_FAILED", "AGGREGATION_FAILED","QUEUED"]:
                 break
             else:
                 print(f"Process state is currently: {process_state}.")
