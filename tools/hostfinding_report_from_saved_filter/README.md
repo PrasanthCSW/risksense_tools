@@ -1,6 +1,6 @@
 ## hostfinding_report_from_saved_filter
 
-A python script that will gather all application findings using a saved
+A python script that will gather all host findings using a saved
 host finding filter, and write the results to a .csv file.
 
 ----

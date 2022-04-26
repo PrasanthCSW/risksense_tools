@@ -59,7 +59,7 @@ count=0
 
 ##################################################################  Writing it to a file ########################################################################################
 
-with open('Vuln_Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
+with open('Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
     for splunk_data in data_list:
         string =  json.loads(str(splunk_data["result"]["_raw"]))
         writer = csv.writer(f)
@@ -88,8 +88,11 @@ with open('Vuln_Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
             f.write(string["data"]["vulnerability"]["cwe_reference"] + ",")
         except Exception as e:
             f.write(""+",")
-
-        try:
+        try:    
+            f.write(string["data"]["vulnerability"]["cvss"]["cvss3"]["base_score"] + ",")
+        except Exception as e:
+            f.write(""+",")
+        '''try:
             severity = string["data"]["vulnerability"]["severity"]
             if(severity == "Critical"):
                 severity = "9"
@@ -101,7 +104,7 @@ with open('Vuln_Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
                 severity = "3"
             f.write(severity+",")       
         except Exception as e:
-            f.write(""+",")
+            f.write(""+",")'''
 
         try:
             f.write(string["agent"]["name"] + ",")
