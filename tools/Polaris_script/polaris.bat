@@ -49,7 +49,7 @@ for /F "skip=1 delims=" %%i in (%file%.csv) do if not defined runid set "runid=%
 
 python getIssues.py --url https://ivanti.polaris.synopsys.com/ --token %t% --project %project% --branch %branch% --run %runid% --all --csv --spec "name,description,b_name,url,issue-key,finding-key,severity,state,cwe,path,status,checker,type,Evidence,Vulnerability desc,Support description"  > upload_to_platform-master_branch\files_to_process\%file%.csv
 
-python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% -n 262688
+python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% 
 
 timeout /t 10
 exit /b %ERRORLEVEL%" 
@@ -81,7 +81,7 @@ IF "%issue%" == "noissues" (
 	exit /b %ERRORLEVEL%" 
 	)
 
-python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% -n 262688
+python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% 
 
 timeout /t 10
 exit /b %ERRORLEVEL%" 
@@ -113,7 +113,7 @@ IF "%issue%" == "noissues" (
 	exit /b %ERRORLEVEL%" 
 	)
 
-python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% -n 262688
+python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% 
 
 timeout /t 10
 exit /b %ERRORLEVEL%" 
@@ -138,7 +138,7 @@ IF "%issue%" == "noissues" (
 	Echo ----------------------------------------------- The defined spec doesn't have any issues -----------------------------------------------
 	exit /b %ERRORLEVEL%" 
 	)
-python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% -n 262688
+python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% 
 timeout /t 10
 exit /b %errorlevel%
 
@@ -160,6 +160,6 @@ IF "%issue%" == "noissues" (
 	Echo ----------------------------------------------- The defined spec doesn't have any issues -----------------------------------------------
 	exit /b %ERRORLEVEL%" 
 	)
-python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% -n 262688
+python upload_to_platform-master_branch\upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -as %assessment% 
 timeout /t 10
 exit /b %errorlevel%
