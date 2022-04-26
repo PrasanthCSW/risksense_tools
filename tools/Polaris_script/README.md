@@ -31,7 +31,7 @@ Enter the Risksense Platform URL and API key in config.toml file under "upload_t
 
 * https://platform4.risksense.com 
 * API Key - 'xxxx'   ---> to be generated in Risksense platform for a user.
-* Client ID - 1373 ( Ivanti DevSecOps client )
+* Client ID - 213132 ( hovering over your user initials will provide the ID of the current client you are logged into )
 
 
 Once these values are entered, you can run the script as;
