@@ -1,0 +1,18 @@
+[platform]
+    "url" = 'https://platform.risksense.com' # Add the url of the platform
+    "api_key" = ''  # Add your API key here.
+    "client_id" =  # Update to include your client ID here.
+	"file_name" = ''
+	"tag_prefix"= ''
+	"incident_prefix" = ''
+	
+	
+[ISM]
+	"ism_url" = 'https://ism-csmriptide-tenant1.ivanticlouddev.com/api/odata/businessobject/incidents'
+	"ism_attachment_url" = 'https://ism-csmriptide-tenant1.ivanticlouddev.com/api/rest/Attachment'
+	"ism_key" = ''
+	"assignee_prefix" = ''
+	"default_assignee"= ''
+	"profile_link"= '' # Profile link of a user in ISM(depends on user who is creating tickets)
+	
+	
