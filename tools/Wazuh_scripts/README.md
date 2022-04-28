@@ -13,6 +13,8 @@ Enter the Risksense Platform URL , API key and client ID in config.toml file und
 * platform = 'https://platform4.risksense.com'
 * api-key = 'xxxx'   ---> to be generated in Risksense platform for a user.
 * client_id = 12345  --> hovering over your user initials will provide the ID of the current client you are logged into
+* network_id = 12345 --> Finding Network ID ;  You can find the network id by using POST API (https://xxxx.risksense.com/api/v1/client/{client_id}/network)  Json Body : {"name": "wazuh_final1","type": "IP"} , Header ; Key - x-api-key , Value - xxxx
+
 
 Once these values are entered, you can run the script as;
 
