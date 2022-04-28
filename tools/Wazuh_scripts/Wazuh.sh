@@ -21,4 +21,4 @@ fi
 
 mv Data*.csv upload_to_platform/files_to_process
 
-python3 upload_to_platform/upload_to_platform.py -p https://platform4.risksense.com -f files_to_process -n 267087
+python3 upload_to_platform/upload_to_platform.py 
