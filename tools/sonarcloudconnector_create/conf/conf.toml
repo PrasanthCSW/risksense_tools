@@ -1,0 +1,12 @@
+platform_url = 'https://platform.risksense.com'
+api_key=''
+client_id=1234
+connector_name="test"
+networkId=1234
+username=""
+password=""
+connector_url="https://sonarcloud.io"
+schedule_enabled=true
+schedule_type="DAILY"
+hourOfDay=10
+autoUrba=false

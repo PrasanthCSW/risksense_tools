@@ -11,6 +11,7 @@
 import os
 import sys
 import csv
+from jmespath import search
 import toml
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'lib'))
 import risksense_api as rsapi
@@ -51,18 +52,9 @@ class AfReportFromFilter:
         #  Set default client ID
         self.rs.set_default_client_id(client_id)
 
-        #  Get filter definition
-        try:
-            filter_defn = self.get_filter_defn(self.saved_filter_name)
-        except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
-            print(ex)
-            print()
-            print("Unable to retrieve saved filter definition. Exiting.")
-            sys.exit(1)
-
         #  Get app finding details, based on saved filter definition.
         try:
-            returned_findings = self.rs.application_findings.search(filter_defn, page_size=1000)
+            returned_findings = self.rs.application_findings.search(search_filters=[], page_size=1000)
         except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.InsufficientPrivileges, rsapi.UserUnauthorized, ValueError) as ex:
             print(ex)
             print()
@@ -163,14 +155,13 @@ class AfReportFromFilter:
         :param output_filename:     filename to write to
         :type  output_filename:     str
         """
-
+        #hf_data=hf_data['_embedded']['applicationFindings']
         field_names = []
-
         for item in hf_data[0]:
             field_names.append(item)
 
         try:
-            with open(output_filename, 'w') as csvfile:
+            with open(output_filename, 'w',encoding='utf-8') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=field_names)
                 writer.writeheader()
                 for item in hf_data:

@@ -39,6 +39,7 @@ class AssetCriticalityUpdate:
         api_key = config['api_key']
         self.__client_id = config['client_id']
         self.file_to_read = config['file_to_read']
+        self.network_type = config['network_type']
 
         try:
             print()
@@ -70,11 +71,13 @@ class AssetCriticalityUpdate:
         print()
         print("Sending update to RiskSense")
         prog_counter = 0
+        row = 1
         prog_bar = progressbar.ProgressBar(max_value=len(self._csv_file_contents))
 
         for host in self._csv_file_contents:
-            self.set_asset_criticality(host['hostname'], host['criticality'])
-            prog_counter += 1
+            self.set_asset_criticality(host['ec2_identifier'], host['netbios'], host['ip_address'], host['hostname'], host['fqdn'], host['dns'], host['mac_addr'], host['scanner_specific_unique_id'], host['criticality'], row)
+            row+=1
+            prog_counter += 1          
             prog_bar.update(prog_counter)
 
         prog_bar.finish()
@@ -87,30 +90,163 @@ class AssetCriticalityUpdate:
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-    def set_asset_criticality(self, hostname, criticality):
+    def set_asset_criticality(self, ec2_identifier, netbios, ip_address, hostname, fqdn, dns, mac_addr, scanner_uuid, criticality, row):
+        """
+        :keyword ip_address:            IP Address.             (str)
+        :keyword hostname:              Hostname.               (str)
+        :keyword fqdn:                  FQDN.                   (str)
+        :keyword netbios:               Netbios.                (str)
+        :keyword ec2_identifier:        EC2 Identifier.         (str)
+        :keyword dns:                   DNS.                    (str)
+        :keyword mac_id:                MAC Address.            (str)
+        :keyword scanner_uuid:          Scanner UUID.           (str)
+        :keyword criticality:           Criticality             (str)
+        
+        """        
+        search_filter = []
+        empty_string = ''
 
-        search_filters = [
-            {
-                "field": "hostName",
-                "exclusive": False,
-                "operator": "EXACT",
-                "value": hostname
+        if self.network_type.upper() == 'IP':
+            filter_ip_network = {
+                    "field": "ipAddress",
+                    "exclusive": False,
+                    "operator": "EXACT",
+                    "value": ip_address
             }
-        ]
+            search_filter.append(filter_ip_network)
+            if ip_address != empty_string and ip_address is not None: 
+                try:
+                    job_id = self.rs.hosts.update_hosts_attrs(search_filter, criticality=int(criticality))
+                    message = f"Successfully submitted update of criticality to {criticality} for host \"{ip_address}\" as job {job_id}"
+                    logging.info(message)
+                except (rs_api.UserUnauthorized, rs_api.InsufficientPrivileges,
+                        rs_api.MaxRetryError, rs_api.StatusCodeError, rs_api.NoMatchFound) as known_ex:
+                    message = f"An error has occurred while trying to set criticality to {criticality} for host \"{ip_address}\""
+                    logging.error(message)
+                    logging.error(known_ex)
+                except Exception as ex:
+                    message = f"An unexpected error has occurred while trying to set criticality to {criticality} for host \"{ip_address}\""
+                    logging.error(message)
+                    logging.error(ex)            
+        elif self.network_type.upper() == 'HOSTNAME':
+            filter_hostname_network = {
+                    "field": "hostname",
+                    "exclusive": False,
+                    "operator": "EXACT",
+                    "value": hostname
+            }
+            search_filter.append(filter_hostname_network)  
+            if hostname != empty_string and hostname is not None:   
+                try:
+                    job_id = self.rs.hosts.update_hosts_attrs(search_filter, criticality=int(criticality))
+                    message = f"Successfully submitted update of criticality to {criticality} for host \"{hostname}\" as job {job_id}"
+                    logging.info(message)
+                except (rs_api.UserUnauthorized, rs_api.InsufficientPrivileges,
+                        rs_api.MaxRetryError, rs_api.StatusCodeError, rs_api.NoMatchFound) as known_ex:
+                    message = f"An error has occurred while trying to set criticality to {criticality} for host \"{hostname}\""
+                    logging.error(message)
+                    logging.error(known_ex)
+                except Exception as ex:
+                    message = f"An unexpected error has occurred while trying to set criticality to {criticality} for host \"{hostname}\""
+                    logging.error(message)
+                    logging.error(ex)                             
+        elif self.network_type.upper() == 'MIXED':
+            mixed_type_asset_presence = False
+            if ip_address != '':
+                mixed_type_asset_presence = True
+                filter_ip = {
+                        "field": "ipAddress",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": ip_address                
+                }
+                search_filter.append(filter_ip)
 
-        try:
-            job_id = self.rs.hosts.update_hosts_attrs(search_filters, criticality=int(criticality))
-            message = f"Successfully submitted update of criticality to {criticality} for host \"{hostname}\" as job {job_id}"
-            logging.info(message)
-        except (rs_api.UserUnauthorized, rs_api.InsufficientPrivileges,
-                rs_api.MaxRetryError, rs_api.StatusCodeError, rs_api.NoMatchFound) as known_ex:
-            message = f"An error has occurred while trying to set criticality to {criticality} for host \"{hostname}\""
-            logging.error(message)
-            logging.error(known_ex)
-        except Exception as ex:
-            message = f"An unexpected error has occurred while trying to set criticality to {criticality} for host \"{hostname}\""
-            logging.error(message)
-            logging.error(ex)
+            if hostname != '':
+                mixed_type_asset_presence = True
+                filter_hostname = {
+                        "field": "hostname",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": hostname                
+                }
+                search_filter.append(filter_hostname)
+
+            if fqdn != '':
+                mixed_type_asset_presence = True
+                filter_fqdn = {
+                        "field": "fqdn",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": fqdn                   
+                }
+                search_filter.append(filter_fqdn)
+
+            if netbios != '':
+                mixed_type_asset_presence = True
+                filter_netbios = {
+                        "field": "netbios",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": netbios                 
+                }
+                search_filter.append(filter_netbios)
+
+            if ec2_identifier != '':
+                mixed_type_asset_presence = True
+                filter_ec2_identifier = {
+                        "field": "ec2Identifier",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": ec2_identifier                 
+                }
+                search_filter.append(filter_ec2_identifier)
+
+            if dns != '':
+                mixed_type_asset_presence = True
+                filter_dns = {
+                        "field": "dns",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": dns                 
+                }
+                search_filter.append(filter_dns)
+
+            if mac_addr != '':
+                mixed_type_asset_presence = True
+                filter_mac_id = {
+                        "field": "macAddress",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": mac_addr                 
+                }
+                search_filter.append(filter_mac_id)
+
+            if scanner_uuid != '':
+                mixed_type_asset_presence = True
+                filter_scanner_uuid = {
+                        "field": "source",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": scanner_uuid                 
+                }
+                search_filter.append(filter_scanner_uuid) 
+            if mixed_type_asset_presence == True:
+                try:
+                    job_id = self.rs.hosts.update_hosts_attrs(search_filter, criticality=int(criticality))
+                    message = f"Successfully submitted update of criticality to {criticality} for row - {row} as job {job_id}"
+                    logging.info(message)
+                except (rs_api.UserUnauthorized, rs_api.InsufficientPrivileges,
+                        rs_api.MaxRetryError, rs_api.StatusCodeError, rs_api.NoMatchFound) as known_ex:
+                    message = f"An error has occurred while trying to set criticality to {criticality} for row - {row}"
+                    logging.error(message)
+                    logging.error(known_ex)
+                except Exception as ex:
+                    message = f"An unexpected error has occurred while trying to set criticality to {criticality} for row - {row}"
+                    logging.error(message)
+                    logging.error(ex)                        
+              
+
 
     def read_csv_file(self):
 

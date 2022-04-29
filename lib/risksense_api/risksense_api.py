@@ -3,7 +3,7 @@
 |  Name        :  risksense_api.py
 |  Description :  Simplify interaction with the RiskSense API
 |  Project     :  risksense_api
-|  Copyright   :  2020 RiskSense, Inc.
+|  Copyright   :  2022 RiskSense, Inc.
 |  License     :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 |
 ******************************************************************************************************************* """
@@ -35,7 +35,11 @@ from .__subject.__users import Users
 from .__subject.__vulnerabilities import Vulnerabilities
 from .__subject.__weaknesses import Weaknesses
 from .__subject.__workflows import Workflows
-
+from .__subject.__sla import Sla
+from .__subject.__notifications import Notifications
+from .__subject.__quickfilters import Quickfilters
+from .__subject.__groupBy import GroupBy
+from .__subject.__patch import Patch
 
 class RiskSenseApi:
 
@@ -171,6 +175,11 @@ class RiskSenseApi:
         self.vulnerabilities = Vulnerabilities(self.__profile)
         self.weaknesses = Weaknesses(self.__profile)
         self.workflows = Workflows(self.__profile)
+        self.sla = Sla(self.__profile) 
+        self.notifications= Notifications(self.__profile)
+        self.quickfilters= Quickfilters(self.__profile)
+        self.groupby= GroupBy(self.__profile)
+        self.patch = Patch(self.__profile)
 
         self.available_subjects = {
             "Application Findings": self.application_findings,
@@ -195,7 +204,12 @@ class RiskSenseApi:
             "Users": self.users,
             "Vulnerabilities": self.vulnerabilities,
             "Weaknesses": self.weaknesses,
-            "Workflows": self.workflows
+            "Workflows": self.workflows,
+            "Sla": self.sla,
+            "Notifications": self.notifications,
+            "Quickfilters": self.quickfilters,
+            "GroupBy": self.groupby,
+            "Patch" : self.patch
         }
 
     def __str__(self):
@@ -203,7 +217,7 @@ class RiskSenseApi:
 
 
 """
-   Copyright 2020 RiskSense, Inc.
+   Copyright 2022 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

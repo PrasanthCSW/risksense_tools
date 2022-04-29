@@ -1,0 +1,44 @@
+# Update to reflect the URL you use when logging in to RiskSense
+
+platform_url = 'https://platform.risksense.com'
+
+
+#  An API key generated for your user. This key will have the
+#  same permissions as your user. Instructions for generating
+#  an API key are found at:
+#  https://help.risksense.com/generating-an-api-token
+
+api_key = ''
+
+
+
+#  If you are a single-client user, comment this setting alone.
+#  If you are a multiclient user, uncomment the client_id
+#  setting below, and specify the # the client ID that you
+#  wish to work with.
+
+client_id = 1234
+
+
+
+# Service Now Platform URL
+
+snow_url = 'https://service-now.com/'
+
+
+
+# Service Now username
+
+snow_username = 'admin'
+
+
+
+# Service Now Password or API Token
+
+snow_password_or_api_token = 'Ahghbfgfc!2#'
+
+
+
+# Service Now connector name to be created
+
+snow_connector_name = 'SNOW RS Test Script'

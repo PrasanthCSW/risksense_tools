@@ -1,5 +1,5 @@
 # cmdb_update
-A Python script for updating a series of hosts' CMDB information by reading the information from a .csv file.
+A Python script for updating a series of host's CMDB information by reading the information from a .csv file.
 
 ----
 
@@ -8,14 +8,27 @@ The configuration file is located at `conf/config.toml`. Open this file
 in you preferred text editor, and update each parameter to reflect those
 pertinent to your user and client.
 
+### Test case
+
+    1. Run the tool with Network type as 'IP based'
+    2. Run the tool with Network type as 'Hostname based'
+    3. Run the tool with blanks values to some columns in the csv file
+
 
 #### CSV file
 An example .csv file has been provided in this folder. There should be one row per host. __Do not edit the headers of this file.__
 
-A `host` entry is required.  Other fields are optional depending on your need to update them.
+A `host` entry fields are required.  Other fields are optional depending on your need to update them.
 
 ##### Column Names:
- * `host` (Host IP Address or hostname. __REQUIRED__)
+ * `ec2_identifier` (__REQUIRED__ if this field is included in precedence of MIXED network type)
+ * `netbios` (__REQUIRED__ if this field is included in precedence of MIXED network type)
+ * `ip_address` (__REQUIRED__ if this field is included in precedence of IP Address or MIXED network types)
+ * `hostname` (__REQUIRED__ if this field is included in precedence of Hostname or MIXED network types)
+ * `fqdn` (__REQUIRED__ if this field is included in precedence of MIXED network type)
+ * `dns` (__REQUIRED__ if this field is included in precedence of MIXED network type)
+ * `mac_addr` (__REQUIRED__ if this field is included in precedence of MIXED network type)
+ * `scanner_specific_unique_id` (__REQUIRED__ if this field is included in precedence of MIXED network type)
  * `os` (Operating System)
  * `manufacturer` (Manufactured By)
  * `model_id` (Model)

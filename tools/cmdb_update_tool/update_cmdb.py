@@ -8,9 +8,11 @@
 |
 ******************************************************************************************************************* """
 
+from ipaddress import ip_address
 import os
 import sys
 import csv
+from turtle import update
 import toml
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'lib'))
 import risksense_api as rsapi
@@ -62,15 +64,16 @@ class CmdbUpdateTool:
 
         success_counter = 0
         failure_counter = 0
-
+        row = 0
         print()
 
         # Loop through each row in the csv data and request an update for each one.
         for item in csv_data_dict:
+            row = row + 1
             # Submit update request to RiskSense Platform
             try:
                 job_id = self.send_update_request(**item)
-                print(f"Update request for {item['host']} successfully submitted as job {job_id}.")
+                print(f"Update request for row - {row} successfully submitted as job id - {job_id}.")
                 success_counter += 1
             except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.NoMatchFound,
                     rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, Exception) as ex:
@@ -165,7 +168,14 @@ class CmdbUpdateTool:
     def send_update_request(self, **kwargs):
 
         """
-        :keyword host:                  Host                    (str)
+        :keyword ip_address:            IP Address.             (str)
+        :keyword hostname:              Hostname.               (str)
+        :keyword fqdn:                  FQDN.                   (str)
+        :keyword netbios:               Netbios.                (str)
+        :keyword ec2_identifier:        EC2 Identifier.         (str)
+        :keyword dns:                   DNS.                    (str)
+        :keyword mac_id:                MAC Address.            (str)
+        :keyword scanner_uuid:          Scanner UUID.           (str)
         :keyword os:                    Operating System.       (str)
         :keyword manufacturer:          Manufacturer.           (str)
         :keyword model_id:              Model.                  (str)
@@ -203,12 +213,45 @@ class CmdbUpdateTool:
         """
 
         # store the host info in a new variable, and pop it from the kwargs dict
-        host = kwargs.get('host', None)
-        kwargs.pop('host')
+
+        ip_address = ''
+        hostname = ''
+        fqdn = ''
+        netbios = ''
+        ec2_identifier = ''
+        dns = ''
+        mac_id = ''
+        scanner_uuid = ''
+
+        if (kwargs.get('ip_address', None) != '') or (kwargs.get('ip_address', None) is not None):
+            ip_address = kwargs.get('ip_address', None)
+        if (kwargs.get('hostname', None) != '') and (kwargs.get('hostname', None) is not None):
+            hostname = kwargs.get('hostname', None)
+        if (kwargs.get('fqdn', None) != '') and (kwargs.get('fqdn', None) is not None):
+            fqdn = kwargs.get('fqdn', None)
+        if (kwargs.get('netbios', None) != '') and (kwargs.get('netbios', None) is not None):
+            netbios = kwargs.get('netbios', None)
+        if (kwargs.get('ec2_identifier', None) != '') and (kwargs.get('ec2_identifier', None) is not None):
+            ec2_identifier = kwargs.get('ec2_identifier', None)
+        if (kwargs.get('dns', None) != '') and (kwargs.get('dns', None) is not None):
+            dns = kwargs.get('dns', None)
+        if (kwargs.get('mac_addr', None) != '') and (kwargs.get('mac_addr', None) is not None):
+            mac_id = kwargs.get('mac_addr', None)
+        if (kwargs.get('scanner_specific_unique_id', None) != '') and (kwargs.get('scanner_specific_unique_id', None) is not None):
+            scanner_uuid = kwargs.get('scanner_specific_unique_id', None)                                                
+
+        kwargs.pop('ip_address')
+        kwargs.pop('hostname')
+        kwargs.pop('fqdn')
+        kwargs.pop('netbios')
+        kwargs.pop('ec2_identifier')
+        kwargs.pop('dns')
+        kwargs.pop('mac_addr')
+        kwargs.pop('scanner_specific_unique_id')
 
         # Create a new dict for the fields to update
         update_dict = {}
-
+        search_filter = []
         empty_string = ""
 
         # Populate the new dict using only the columns that are populated for this host
@@ -217,40 +260,139 @@ class CmdbUpdateTool:
                 update_dict[item] = kwargs[item]
 
         if self.network_type.upper() == 'HOSTNAME':
-            search_filter = [
-                {
+            filter_hostname_network = {
                     "field": "hostname",
                     "exclusive": False,
                     "operator": "EXACT",
-                    "value": host
+                    "value": hostname
                 }
-            ]
-        else:
-            search_filter = [
-                {
+            search_filter.append(filter_hostname_network)
+
+            # If hostname isn't blank, build the body, and make the API update request
+            if hostname != empty_string and hostname is not None:
+                # Send API update request
+                try:
+                    job_id = self.rs.hosts.update_hosts_cmdb(search_filter, **update_dict)
+                except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, rsapi.NoMatchFound) as ex:
+                    print(ex)
+                    raise
+            else:
+                raise ValueError("There was no host provided for this row.")            
+        elif self.network_type.upper() == 'IP':
+            filter_ip_network = {
                     "field": "ipAddress",
                     "exclusive": False,
                     "operator": "EXACT",
-                    "value": host
+                    "value": ip_address
                 }
-            ]
+            search_filter.append(filter_ip_network)
 
-        # If host isn't blank, build the body, and make the API update request
-        if host != empty_string and host is not None:
-            # Send API update request
-            try:
-                job_id = self.rs.hosts.update_hosts_cmdb(search_filter, **update_dict)
-            except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, rsapi.NoMatchFound) as ex:
-                print(ex)
-                raise
-        else:
-            raise ValueError("There was no host provided for this row.")
+            # If ip_address isn't blank, build the body, and make the API update request
+            if ip_address != empty_string and ip_address is not None:
+                # Send API update request
+                try:
+                    job_id = self.rs.hosts.update_hosts_cmdb(search_filter, **update_dict)
+                except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, rsapi.NoMatchFound) as ex:
+                    print(ex)
+                    raise
+            else:
+                raise ValueError("There was no host provided for this row.")            
+        elif self.network_type.upper() == 'MIXED':
+            mixed_type_asset_presence = False
+            if ip_address != '':
+                mixed_type_asset_presence = True
+                filter_ip = {
+                        "field": "ipAddress",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": ip_address                
+                }
+                search_filter.append(filter_ip)
+
+            if hostname != '':
+                mixed_type_asset_presence = True
+                filter_hostname = {
+                        "field": "hostname",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": hostname                
+                }
+                search_filter.append(filter_hostname)
+
+            if fqdn != '':
+                mixed_type_asset_presence = True
+                filter_fqdn = {
+                        "field": "fqdn",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": fqdn                   
+                }
+                search_filter.append(filter_fqdn)
+
+            if netbios != '':
+                mixed_type_asset_presence = True
+                filter_netbios = {
+                        "field": "netbios",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": netbios                 
+                }
+                search_filter.append(filter_netbios)
+
+            if ec2_identifier != '':
+                mixed_type_asset_presence = True
+                filter_ec2_identifier = {
+                        "field": "ec2Identifier",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": ec2_identifier                 
+                }
+                search_filter.append(filter_ec2_identifier)
+
+            if dns != '':
+                mixed_type_asset_presence = True
+                filter_dns = {
+                        "field": "dns",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": dns                 
+                }
+                search_filter.append(filter_dns)
+
+            if mac_id != '':
+                mixed_type_asset_presence = True
+                filter_mac_id = {
+                        "field": "macAddress",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": mac_id                 
+                }
+                search_filter.append(filter_mac_id)
+
+            if scanner_uuid != '':
+                mixed_type_asset_presence = True
+                filter_scanner_uuid = {
+                        "field": "source",
+                        "exclusive": False,
+                        "operator": "EXACT",
+                        "value": scanner_uuid                 
+                }
+                search_filter.append(filter_scanner_uuid)    
+
+            # If mixed_type_asset_presence is True, build the body, and make the API update request
+            if mixed_type_asset_presence == True:
+                # Send API update request
+                try:
+                    job_id = self.rs.hosts.update_hosts_cmdb(search_filter, **update_dict)
+                except (rsapi.StatusCodeError, rsapi.MaxRetryError, rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, rsapi.NoMatchFound) as ex:
+                    print(ex)
+                    raise
+            else:
+                raise ValueError("There was no host provided for this row.")
 
         return job_id
 
 
-#
-#
 #  Execute the script
 if __name__ == "__main__":
     try:
