@@ -1,6 +1,6 @@
 # risksense_tools
 
-A repository of tools that interact with the RiskSense API.
+A repository of tools that interact with the RiskSense API
 
 ## Available Tools
 
