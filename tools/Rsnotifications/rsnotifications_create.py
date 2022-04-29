@@ -7,15 +7,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
 
 import risksense_api as rsapi
 
-class Notificationdata:
-    NEW_OPEN_HIGH_FINDINGS_SEVERITY=8
-    NEW_OPEN_HIGH_FINDINGS_VRR=7
-    NEW_VULNERABILITY_RANSOMWARE=2
-    CHANGE_IN_GROUP_RS3=3
-    NEW_OPEN_RANSOMWARE_FINDINGS=4
-    NEW_OPEN_CRITICAL_FINDINGS_VRR=5
-    NEW_OPEN_CRITICAL_FINDINGS_SEVERITY=6
-    INTEGRATION_STATUS_UPDATE=9
 
 class rsnotifications:
     def read_config_file(self,filename):
@@ -50,32 +41,42 @@ class rsnotifications:
         self.deliverychanneltype=""
         self.channelname=config['channelname']
         self.subscribe=config['subscribe']
-        self.deletenotifications=config['deletechannel']
-        self.channelstodelete=config['channelstodelete']
+        self.deletechannel=config['deletechannel']
+        self.channelstodelete=config['channelstodeleteid']
         self.channeltodisable=config['channelidtodisable']
         self.disablechannel=config['disablechannel']
         self.rs = rsapi.RiskSenseApi(self.rs_platform,self.api_key)
         self.deliverychannelid=0
         self.rs.set_default_client_id(self.client_id)
 
-        if self.deletenotifications==True:
+        if self.deletechannel==True: 
+           print('Deleting channel switch is on , will begin deleting channel')
            response=self.rs.notifications.delete_delivery_channel(self.channelstodelete)
            print(response)
            exit()
+
         elif self.disablechannel==True:
+            print('Disabling channel switch is on , will begin disabling channel')
             checkstatus=self.check_delivery_channel_type()
             response=self.rs.notifications.disablenotification(self.channeltodisable,self.channelname,self.deliverychanneltype)
             print(response)
-        else:    
+
+        else:   
+            print('Checking if channel exists in the address') 
             checkstatus=self.check_delivery_channel_type()
             if checkstatus==False:
-                self.create_delivery_channel(self.channelname,self.deliverychanneltype)
+                print('Unable to find channel will begin creating the channel')
+                response=self.create_delivery_channel(self.channelname,self.deliverychanneltype)
+                print(response)
                 self.check_delivery_channel(self.deliveryaddress,self.deliverychanneltype)
                 enabled=self.rs.notifications.enablenotification(self.deliverychannelid,self.channelname,self.deliverychanneltype)
                 print(enabled)
-            # Please choose the type of notification you would like to subscribe to        
-            subscribe=self.rs.notifications.subscribe_notifications(Notificationdata.NEW_OPEN_CRITICAL_FINDINGS_VRR,self.subscribe)
 
+            # Please choose the type of notification you would like to subscribe to  #
+            notificationid=self.find_notifications('s')      
+
+            subscribe=self.rs.notifications.subscribe_notifications(notificationid,self.subscribe)
+            
     def check_delivery_channel_type(self):
             if self.outlook!="":
                 print('Found teams,searching for teams')
@@ -94,6 +95,21 @@ class rsnotifications:
                 checkstatus=self.check_delivery_channel(self.slack,self.deliverychanneltype)  
                 print(checkstatus)
             return checkstatus
+
+    def find_notifications(self,l):
+        try:
+            response=self.rs.notifications.get_notifications()
+            print(response)
+        except (rsapi.MaxRetryError, rsapi.StatusCodeError, rsapi.NoMatchFound,
+                rsapi.UserUnauthorized, rsapi.InsufficientPrivileges, Exception) as ex:
+                            print(ex)
+        print("[+] These are the available notifications in the  platform\n")
+        for ind in range(len(response['elements'])):
+            print(f"Index Number - {ind} - {response['elements'][ind]['title']}")
+        print()
+        notification = int(input('Enter the index number of notification that you want to select: '))
+        notificationid= response['elements'][notification]['notificationTypeId']
+        return notificationid
 
 
     def create_delivery_channel(self,deliverychannel,deliverychanneltype):
@@ -124,9 +140,6 @@ class rsnotifications:
             for i in range(len(channel_data['deliveryChannelDetails'])):
                 deliverychanneldetails=channel_data['deliveryChannelDetails']
                 for j in range(len(deliverychanneldetails[i]["addresses"])):
-                    print(deliverychanneldetails[i]["addresses"][j].lower())
-                    print(deliverychannel.lower())
-                    print(deliverychanneldetails[i]["addresses"][j].lower())
                     if deliverychanneldetails[i]["addresses"][j].lower()==deliverychannel.lower():
                         ispresent=True
                         self.deliverychannelid=deliverychanneldetails[i]['id']

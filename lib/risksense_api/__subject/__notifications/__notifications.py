@@ -14,25 +14,15 @@ from .. import Subject
 from ..._params import *
 from ..._api_request_handler import *
 
-class Notificationdata:
-    NEW_OPEN_HIGH_FINDINGS_SEVERITY="New Open High Findings (Severity)"
-    NEW_OPEN_HIGH_FINDINGS_SEVERITY="New Open High Findings (VRR)"
-    NEW_VULNERABILITY_RANSOMWARE="New Vulnerability Ransomware"
-    CHANGE_IN_GROUP_RS3="Change in Group RS3"
-    NEW_OPEN_RANSOMWARE_FINDINGS="New Open Ransomware Findings"
-    NEW_OPEN_CRITICAL_FINDINGS_VRR="New Open Critical Findings (VRR)"
-    NEW_OPEN_CRITICAL_FINDINGS_SEVERITY="New Open Critical Findings (Severity)"
-    INTEGRATION_STATUS_UPDATE="Integration Status Update"
-
 
 class Notifications(Subject):
 
-    """ Networks class """
+    """ Notifications class """
 
     def __init__(self, profile):
 
         """
-        Initialization of Networks object.
+        Initialization of Notifications object.
 
         :param profile:     Profile Object
         :type  profile:     _profile
@@ -45,19 +35,19 @@ class Notifications(Subject):
     def subscribe_notifications(self,notificationtypeid,subscribe,client_id=None):
 
         """
-        Update an existing network.
+        Subscribe to a notification
 
-        :param network_id:  The network ID.
-        :type  network_id:  int
+        :param notificationtypeid:  The notification id to subscribe.
+        :type  notificationtypeid:  int
 
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
+        :param subscribe:  Whether to subscribe or not
+        :type  subscribe:  Bool
 
-        :keyword name:          A new name for the network.             (str)
-        :keyword network_type:  The network type. "IP" or "hostname".   (str)
+        :param client_id:  The client id , if none will provide the default client id
+        :type  client_id:  int
 
-        :return:    The network ID
-        :rtype:     int
+        :return:    Success json
+        :rtype:     json
 
         :raises RequestFailed:
         :raises ValueError:
@@ -79,28 +69,6 @@ class Notifications(Subject):
         jsonified_response = json.loads(raw_response.text)
 
         return jsonified_response
-
-
-
-    
-    def get_notifications(self,client_id=None):
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id))+"/page?page=0&size=50&order=desc"
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-        
-        return jsonified_response
-    
-
-
 
 
     def listrules(self, client_id):
@@ -126,22 +94,7 @@ class Notifications(Subject):
     def updatenotifications(self, rules,client_id=None):
 
         """
-        Update an existing network.
-
-        :param network_id:  The network ID.
-        :type  network_id:  int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:          A new name for the network.             (str)
-        :keyword network_type:  The network type. "IP" or "hostname".   (str)
-
-        :return:    The network ID
-        :rtype:     int
-
-        :raises RequestFailed:
-        :raises ValueError:
+        In development
         """
 
         if client_id is None:
@@ -167,6 +120,19 @@ class Notifications(Subject):
 
         """
         Mark as read/unread notifications
+
+        :param notificationtypeid:  The notification id to subscribe.
+        :type  notificationtypeid:  int
+
+        :param markasread:  Whether to markread or not
+        :type  subscribe:   Bool
+
+        :param client_id:  The client id , if none will provide the default client id
+        :type  client_id:  int
+
+        :return:    Success json
+        :rtype:     json
+        
         """
 
         if client_id is None:
@@ -180,11 +146,12 @@ class Notifications(Subject):
                 }
 
         try:
-            self.request_handler.make_request(ApiRequestHandler.PUT, url,body=body)
+            raw_response=self.request_handler.make_request(ApiRequestHandler.PUT, url,body=body)
         except RequestFailed:
             raise
-        
-        
+        jsonified_response = json.loads(raw_response)
+
+        return jsonified_response   
 
     def create_delivery_channel(self, channelname, channeltype, webhookcontenttype,
                                addressDetails,verificationcode,client_id=None):
@@ -456,6 +423,20 @@ class Notifications(Subject):
         jsonified_response = json.loads(raw_response.text)
 
         return jsonified_response
+    
+    def get_notifications(self,client_id=None):
+        if client_id is None:
+            client_id= self._use_default_client_id()[0]
+        
+        url = self.api_base_url.format(str(client_id)) + "/page?page=0&size=50&order=desc"
+        try:
+            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
+        except RequestFailed:
+            raise
+
+        jsonified_response = json.loads(raw_response.text)
+        return jsonified_response
+
     
     def list_channel_admin(self,order,client_id=None):
         if client_id is None:

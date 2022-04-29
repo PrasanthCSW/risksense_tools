@@ -1,12 +1,18 @@
 platform_url = 'https://platform2.risksense.com'
 api_key='11ec67dc-ace2-f071-b01a-06a9a515001a:XjFOTFhzTyVEdyZfUk1Zb0NUeVNvQ1ZNKlBAXi0lZVpzJHh6N21IWmw4QWM3dE1iZzIwcHktRjBDdDExNzljcQ=='
 client_id=793
+
+### Provide the url which will be used to create delivery channel , the rest besides the necessary delivery channel should be empty also a channel name
 slackwebookurl=""
 outlookwebhookurl=""
 email="thahasina.banu@risksense.com"
 channelname='test1'
-subscribe=false
+
+### If need to delete a delivery channel , please provide a list of the delivery channels to delete and set delete channel as true
 deletechannel=true
-channelstodelete=[52]
+channelstodeleteid=[52]
+
+### If need to disable a delivery channel , please provide the delivery channel to disable and set disable channel as true
+
 channelidtodisable=52
 disablechannel=false
