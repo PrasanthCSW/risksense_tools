@@ -114,9 +114,8 @@ class Networks(Subject):
             raw_response = self.request_handler.make_request(ApiRequestHandler.PUT, url, body=body)
         except RequestFailed:
             raise
-        
-        print(raw_response)
-        jsonified_response = json.loads(raw_response.text)
+
+        jsonified_response = json.loads(raw_response)
         returned_id = jsonified_response['id']
 
         return returned_id
@@ -314,29 +313,7 @@ class Networks(Subject):
 
         return response
 
-    def filter_network(self,client_id=None):
-        """
-        Lists fields that can be filtered by in the filter network endpoint
 
-        :param client_id:   Client ID
-        :type  client_id:   int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/filter"
-
-        try:
-            raw_response=self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-        
-        jsonified_response = json.loads(raw_response.text)
-
-        return jsonified_response
-        
 """
    Copyright 2021 RiskSense, Inc.
    

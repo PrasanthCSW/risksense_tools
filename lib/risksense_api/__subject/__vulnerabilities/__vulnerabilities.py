@@ -2,7 +2,7 @@
 |
 |  Name        :  __vulnerabilities.py
 |  Project     :  risksense_api
-|  Copyright   :  2022 RiskSense, Inc.
+|  Copyright   :  2021 RiskSense, Inc.
 |  License     :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 |
 ******************************************************************************************************************* """
@@ -10,7 +10,6 @@
 import json
 from ...__subject import Subject
 from ..__exports import ExportFileType
-from ..__exports import ExportRowNumbers
 from ..._params import *
 from ..._api_request_handler import *
 
@@ -199,90 +198,15 @@ class Vulnerabilities(Subject):
 
         return response
 
-    def getexporttemplate(self,client_id=None):
-        
-        """
-        Gets configurable export template for application findings.
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The Exportable fields
-        :rtype:     list
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/export/template"
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        exportablefilter = json.loads(raw_response.text)
-
-        for i in range(len(exportablefilter['exportableFields'])):
-            for j in range(len(exportablefilter['exportableFields'][i]['fields'])):
-                if exportablefilter['exportableFields'][i]['fields'][j]['selected']==False:
-                    exportablefilter['exportableFields'][i]['fields'][j]['selected']=True
-
-        return exportablefilter['exportableFields']
-
-
-    def export(self, search_filters, file_name, row_count=ExportRowNumbers.ROW_ALL,file_type=ExportFileType.CSV, client_id=None):
+    def get_export_template(self, client_id=None):
 
         """
-        Initiates an export job on the platform for application finding(s) based on the
-        provided filter(s).
+        Get all fields that are part of configurable export
 
-        :param search_filters:  A list of dictionaries containing filter parameters.
-        :type  search_filters:  list
+        :param client_id:   Client ID
+        :type  client_id:   int
 
-        :param file_name:       The name to be used for the exported file.
-        :type  file_name:       str
-
-        :param row_count:       No of rows to be exported. Possible options : (ExportRowNumbers.ROW_5000,ExportRowNumbers.ROW_10000,ExportRowNumbers.ROW_25000,ExportRowNumbers.ROW_50000",ExportRowNumbers.ROW_100000",ExportRowNumbers.ROW_ALL)
-        :type  row_count:       str
-
-        :param exportable_filter:       Exportable filter
-        :type  exportable_filter:       list
-        :param file_type:       File type to export.  ExportFileType.CSV, ExportFileType.XML, or ExportFileType.XLSX
-        :type  file_type:       str
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The job ID in the platform from is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        func_args = locals()
-        func_args['exportable_filter']=self.getexporttemplate()
-        func_args.pop('self')
-        print(func_args)
-        if client_id is None:
-            func_args['client_id'] = self._use_default_client_id()[1]
-        try:
-            export_id = self._export(self.subject_name, **func_args)
-        except RequestFailed:
-            raise
-
-        return export_id
-
-    def get_vulnerabilities_filterfields(self, client_id=None):
-
-        """
-        List fields that can be filtered by in the search endpoint
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The jsonified data of the status
+        :return:    Fields that can be configured for export
         :rtype:     dict
 
         :raises RequestFailed:
@@ -291,20 +215,61 @@ class Vulnerabilities(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url.format(str(client_id)) + "/filter"
+        url = self.api_base_url.format(str(client_id)) + '/export/template'
 
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
         except RequestFailed:
             raise
 
-        jsonified_data = json.loads(raw_response.text)
+        jsonified_response = json.loads(raw_response.text)
 
-        print(jsonified_data)
+        return jsonified_response
+
+    def export(self, search_filters, file_name, file_type=ExportFileType.CSV, comment="", client_id=None):
+
+        """
+        Initiates an export job on the platform for vulnerabilities based on the provided filter(s).
+
+        :param search_filters:  A list of dictionaries containing filter parameters.
+        :type  search_filters:  list
+
+        :param file_name:       The file name to be assigned to the export.
+        :type  file_name:       str
+
+        :param file_type:       The file type for the export.  Options are ExportFileType.CSV,
+                                ExportFileType.XML, and ExportFileType.XLSX
+        :type  file_type:       str
+
+        :param comment:         Any comment wished to be associated with the export.
+        :type  comment:         str
+
+        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
+        :type  client_id:       int
+
+        :return:    The job ID is returned.
+        :rtype:     int
+
+        :raises RequestFailed:
+        :raises ValueError:
+        """
+
+        func_args = locals()
+        func_args.pop('self')
+
+        if client_id is None:
+            func_args['client_id'] = self._use_default_client_id()[1]
+
+        try:
+            export_id = self._export(self.subject_name, **func_args)
+        except (RequestFailed, ValueError):
+            raise
+
+        return export_id
 
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

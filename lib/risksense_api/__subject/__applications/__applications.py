@@ -10,7 +10,6 @@
 
 import json
 from ..__exports import ExportFileType
-from ..__exports import ExportRowNumbers
 from ...__subject import Subject
 from ..._params import *
 from ..._api_request_handler import *
@@ -242,45 +241,10 @@ class Applications(Subject):
 
         return job_id
 
-    def getexporttemplate(self,client_id=None):
-        
-        """
-        Gets configurable export template for application findings.
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The Exportable fields
-        :rtype:     list
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/export/template"
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        exportablefilter = json.loads(raw_response.text)
-
-        for i in range(len(exportablefilter['exportableFields'])):
-            for j in range(len(exportablefilter['exportableFields'][i]['fields'])):
-                if exportablefilter['exportableFields'][i]['fields'][j]['selected']==False:
-                    exportablefilter['exportableFields'][i]['fields'][j]['selected']=True
-
-        return exportablefilter['exportableFields']
-
-
-    def export(self, search_filters, file_name, row_count=ExportRowNumbers.ROW_ALL,file_type=ExportFileType.CSV, client_id=None):
+    def export(self, search_filters, file_name, file_type=ExportFileType.CSV, comment="", client_id=None):
 
         """
-        Initiates an export job on the platform for application finding(s) based on the
-        provided filter(s).
+        Initiates an export job on the platform for applications(s) based on the provided filter(s).
 
         :param search_filters:  A list of dictionaries containing filter parameters.
         :type  search_filters:  list
@@ -288,33 +252,34 @@ class Applications(Subject):
         :param file_name:       The name to be used for the exported file.
         :type  file_name:       str
 
-        :param row_count:       No of rows to be exported. Possible options : (ExportRowNumbers.ROW_5000,ExportRowNumbers.ROW_10000,ExportRowNumbers.ROW_25000,ExportRowNumbers.ROW_50000",ExportRowNumbers.ROW_100000",ExportRowNumbers.ROW_ALL)
-        :type  row_count:       str
-        
         :param file_type:       File type to export.  ExportFileType.CSV, ExportFileType.XML, or ExportFileType.XLSX
-        :type  file_type:       str
+        :type file_type:        ExportFileType attribute
+
+        :param comment:         Any comments to include with the export.
+        :type  comment:         str
 
         :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
         :type  client_id:       int
 
-        :return:    The job ID in the platform from is returned.
+        :return:    The job ID is returned.
         :rtype:     int
 
         :raises RequestFailed:
+        :raises ValueError:
         """
+
         func_args = locals()
-        func_args['exportable_filter']=self.getexporttemplate()
         func_args.pop('self')
-        print(func_args)
+
         if client_id is None:
             func_args['client_id'] = self._use_default_client_id()[1]
+
         try:
             export_id = self._export(self.subject_name, **func_args)
-        except RequestFailed:
+        except (RequestFailed, ValueError):
             raise
 
         return export_id
-
 
     def network_move(self, search_filters, network_id, force_merge=False, client_id=None):
 
@@ -558,7 +523,7 @@ class Applications(Subject):
 
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

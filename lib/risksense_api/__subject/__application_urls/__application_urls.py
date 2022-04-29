@@ -3,7 +3,7 @@
 |  Name        :  __application_urls.py
 |  Description :  ApplicationUrls
 |  Project     :  risksense_api
-|  Copyright   :  2022 RiskSense, Inc.
+|  Copyright   :  2021 RiskSense, Inc.
 |  License     :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 |
 ******************************************************************************************************************* """
@@ -178,10 +178,10 @@ class ApplicationUrls(Subject):
             raise
 
         return all_results
-        
+
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -10,7 +10,6 @@
 
 import json
 from ..__exports import ExportFileType
-from ..__exports import ExportRowNumbers
 from ...__subject import Subject
 from ..._params import *
 from ..._api_request_handler import *
@@ -33,96 +32,6 @@ class Users(Subject):
         self.subject_name = "user"
         Subject.__init__(self, profile, self.subject_name)
         self.api_base_url = self.profile.platform_url + "/api/v1/"
-
-    def remove_users(self,useruuid,clientid):
-
-        url = self.api_base_url + "/client/{}/user/{}".format(str(clientid),useruuid)
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.DELETE, url)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-        user_profile = jsonified_response
-
-        return user_profile
-    
-
-    
-    def get_user_iam(self,clientid,useruuid):
-
-        url = self.api_base_url + "/client/{}/user/{}".format(str(clientid),useruuid)
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-        iam = jsonified_response
-
-        return iam
-
-    def get_filter(self,clientid=None):
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[1]
-
-        url = self.api_base_url + "/client/{}/user/filter".format(str(clientid))
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-        iam = jsonified_response
-
-        return iam
-    
-    def assign_group(self,filter,targetgroupids,clientid=None):
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[1]
-
-        url = self.api_base_url + "/client/{}/user/assign-group".format(str(clientid))
-
-        body= {
-                "filterRequest": filter,
-                "targetGroupIds": targetgroupids
-                }
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url,body=body)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-
-        return jsonified_response
-
-    def unassign_group(self,filter,targetgroupids,clientid=None):
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[1]
-
-        url = self.api_base_url + "/client/{}/user/unassign-group".format(str(clientid))
-
-        body= {
-                "filterRequest": filter,
-                "targetGroupIds": targetgroupids
-                }
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url,body=body)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-
-        return jsonified_response
-
 
     def get_my_profile(self):
 
@@ -161,7 +70,7 @@ class Users(Subject):
         :raises RequestFailed:
         """
 
-        url = self.api_base_url + "/clients/user/" + str(user_id) + "/tokenAllowed"
+        url = self.api_base_url + "user/" + str(user_id) + "/tokenAllowed"
 
         body = {
             "allowed": False
@@ -189,7 +98,7 @@ class Users(Subject):
         :raises RequestFailed:
         """
 
-        url = self.api_base_url + "/clients/user/" + str(user_id) + "/tokenAllowed"
+        url = self.api_base_url + "user/" + str(user_id) + "/tokenAllowed"
 
         body = {
             "allowed": True
@@ -203,44 +112,10 @@ class Users(Subject):
 
         return success
 
-    def getexporttemplate(self,client_id=None):
-        
-        """
-        Gets configurable export template for application findings.
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The Exportable fields
-        :rtype:     list
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url+"client/{}/user/export/template".format(str(client_id))
-        print(url)
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        exportablefilter = json.loads(raw_response.text)
-
-        for i in range(len(exportablefilter['exportableFields'])):
-            for j in range(len(exportablefilter['exportableFields'][i]['fields'])):
-                if exportablefilter['exportableFields'][i]['fields'][j]['selected']==False:
-                    exportablefilter['exportableFields'][i]['fields'][j]['selected']=True
-
-        return exportablefilter['exportableFields']
-
-
-    def export(self, search_filters, file_name, row_count=ExportRowNumbers.ROW_ALL,file_type=ExportFileType.CSV, client_id=None):
+    def export(self, search_filters, file_name, file_type=ExportFileType.CSV, comment="", client_id=None):
 
         """
-        Initiates an export job on the platform for application finding(s) based on the
+        Initiates an export job on the platform for user(s) based on the
         provided filter(s).
 
         :param search_filters:  A list of dictionaries containing filter parameters.
@@ -249,31 +124,31 @@ class Users(Subject):
         :param file_name:       The name to be used for the exported file.
         :type  file_name:       str
 
-        :param row_count:       No of rows to be exported. Possible options : (ExportRowNumbers.ROW_5000,ExportRowNumbers.ROW_10000,ExportRowNumbers.ROW_25000,ExportRowNumbers.ROW_50000",ExportRowNumbers.ROW_100000",ExportRowNumbers.ROW_ALL)
-        :type  row_count:       str
-
-        :param exportable_filter:       Exportable filter
-        :type  exportable_filter:       list
         :param file_type:       File type to export.  ExportFileType.CSV, ExportFileType.XML, or ExportFileType.XLSX
         :type  file_type:       str
+
+        :param comment:         Any comments to include with the export.
+        :type  comment:         str
 
         :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
         :type  client_id:       int
 
-        :return:    The job ID in the platform from is returned.
+        :return:    The job ID returned
         :rtype:     int
 
         :raises RequestFailed:
+        :raises ValueError:
         """
+
         func_args = locals()
-        func_args['exportable_filter']=self.getexporttemplate()
         func_args.pop('self')
-        print(func_args)
+
         if client_id is None:
             func_args['client_id'] = self._use_default_client_id()[1]
+
         try:
             export_id = self._export(self.subject_name, **func_args)
-        except RequestFailed:
+        except (RequestFailed, ValueError):
             raise
 
         return export_id
@@ -406,7 +281,7 @@ class Users(Subject):
 
         params = {}
 
-        url = self.api_base_url + "/user"
+        url = self.api_base_url + "client/{}/user".format(str(client_id))
 
         if user_id is not None:
             params.update({"userId": user_id})
@@ -497,7 +372,7 @@ class Users(Subject):
 
         return job_id
 
-    def update_user_role(self, currentrole,currentexpiration,newrole,newexpiration, client_id=None,user_id=None):
+    def update_user_role(self, search_filter, role, client_id=None):
 
         """
         Update user role.
@@ -520,20 +395,14 @@ class Users(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url + "client/{}/user/{}/role".format(str(client_id),user_id)
+        url = self.api_base_url + "client/{}/user/userRole/update".format(str(client_id))
 
         body = {
-                "roles": [
-                    {
-                    "role": currentrole,
-                    "expirationDate": currentexpiration
-                    },
-                    {
-                    "role": newrole,
-                    "expirationDate": newexpiration
-                    }
-                ]
-                }
+            "filterRequest": {
+                "filters": search_filter
+            },
+            "role": role
+        }
 
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url, body=body)
@@ -659,7 +528,6 @@ class Users(Subject):
 
         return job_id
 
-
     def get_model(self, client_id=None):
 
         """
@@ -714,52 +582,9 @@ class Users(Subject):
 
         return response
 
-    def import_users_csv(self, file_name, path_to_file, client_id=None):
-
-        """
-        Add a file to an upload.
-
-        :param upload_id:   Upload ID
-        :type  upload_id:   int
-
-        :param file_name:   The name to be used for the uploaded file.
-        :type  file_name:   str
-
-        :param path_to_file:   Full path to the file to be uploaded.
-        :type  path_to_file:   str
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The file ID is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        :raises FileNotFoundError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url + "client/{}/user/importUsersCsv".format(str(client_id))
-
-        upload_file = {'csvdata': (file_name, open(path_to_file, 'rb'))}
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url, files=upload_file)
-        except RequestFailed:
-            raise
-        except FileNotFoundError:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-        file_id = jsonified_response[0]['id']
-
-        return file_id
-
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -19,15 +19,6 @@ class ExportFileType:
     XML = "XML"
     XLSX = "XLSX"
 
-class ExportRowNumbers:
-    """ ExportRowNumbers class and params"""
-    ROW_5000 = "5000"
-    ROW_10000 = "10000"
-    ROW_25000 = "25000"
-    ROW_50000 = "50000"
-    ROW_100000 = "100000"
-    ROW_ALL = "All"
-
 
 class Exports(Subject):
 
@@ -72,6 +63,7 @@ class Exports(Subject):
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
         except RequestFailed:
             raise
+
         jsonified_response = json.loads(raw_response.text)
         export_status = jsonified_response['status']
 
@@ -153,7 +145,7 @@ class Exports(Subject):
 
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

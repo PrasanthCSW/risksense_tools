@@ -17,36 +17,25 @@ class FilterSubject:
 
     """ FilterSubject class and params"""
 
-    APP_RS3_HISTORY= "appRs3History"
     APPLICATION = "application"
     APPLICATION_FINDING = "applicationFinding"
-    APPLICATION_MANUAL_FINDING_EXPLOIT = "applicationManualExploit"
-    APPLICATION_MANUAL_FINDING_REPORT = "applicationManualFindingReport"
+    APPLICATION_MANUAL_EXPLOIT = "applicationManualExploit"
     APPLICATION_URL = "applicationUrl"
     ASSESSMENT = "assessment"
-    ASSET_FINDING_TREND_MODEL="assetFindingTrendModel"
     CLIENT = "client"
-    CLIENT_HOST_RS3_HISTORY="clientHostRs3History"
     DATABASE = "database"
     DATABASE_FINDING = "databaseFinding"
     GROUP = "group"
     HOST = "host"
     HOST_FINDING = "hostFinding"
     HOST_MANUAL_EXPLOIT = "hostManualExploit"
-    HOST_MANUAL_REPORT= "hostManualFindingReport"
-    MULTI_CLIENT_USER="multiClientUser"
     NETWORK = "network"
     PATCH = "patch"
-    RS_NOTIFICATIONS="rsNotifications"
     TAG = "tag"
     UNIQUE_APPLICATION_FINDING = "uniqueApplicationFinding"
     UNIQUE_HOST_FINDING = "uniqueHostFinding"
     USER = "user"
-    USER_MINIMAL="userMinimal"
-    USER_ACTIVITY="useractivity"
-    VULNERABILITY="vulnerability"
-    WEAKNESS="weakness"
-    WORKFLOW_BATCH="workflowBatch"
+
 
 class Filters(Subject):
 
@@ -63,46 +52,31 @@ class Filters(Subject):
 
         self.subject_name = "filter"
         Subject.__init__(self, profile, self.subject_name)
-        self.api_base_url=self.profile.platform_url+ "/api/v1/client/{}/search/{}/filter"
-        self.alt_api_base_url = self.profile.platform_url + "/api/v1/client/search/{}/filter"
+        self.alt_api_base_url = self.profile.platform_url + "/api/v1/client/{}/search/{}/filter"
 
     def list_filters(self, filter_subject, client_id=None):
 
         """
         List all saved filters available for the specified filter_subject.
 
-        :param filter_subject:  Supported Subjects are: 
-       
-   FilterSubject.APP_RS3_HISTORY
-                                                        FilterSubject.APPLICATION
+        :param filter_subject:  Supported Subjects are: FilterSubject.APPLICATION
                                                         FilterSubject.APPLICATION_FINDING
-                                                        FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-                                                        FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
+                                                        FilterSubject.APPLICATION_MANUAL_EXPLOIT
                                                         FilterSubject.APPLICATION_URL
                                                         FilterSubject.ASSESSMENT
-                                                        FilterSubject.ASSET_FINDING_TREND_MODEL
                                                         FilterSubject.CLIENT
-                                                        FilterSubject.CLIENT_HOST_RS3_HISTORY
                                                         FilterSubject.DATABASE
                                                         FilterSubject.DATABASE_FINDING
                                                         FilterSubject.GROUP
                                                         FilterSubject.HOST
                                                         FilterSubject.HOST_FINDING
                                                         FilterSubject.HOST_MANUAL_EXPLOIT
-                                                        FilterSubject.HOST_MANUAL_REPORT
-                                                        FilterSubject.MULTI_CLIENT_USER
                                                         FilterSubject.NETWORK
                                                         FilterSubject.PATCH
-                                                        FilterSubject.RS_NOTIFICATIONS
                                                         FilterSubject.TAG
                                                         FilterSubject.UNIQUE_APPLICATION_FINDING
                                                         FilterSubject.UNIQUE_HOST_FINDING
                                                         FilterSubject.USER
-                                                        FilterSubject.USER_MINIMAL
-                                                        FilterSubject.USER_ACTIVITY
-                                                        FilterSubject.VULNERABILITY
-                                                        FilterSubject.WEAKNESS
-                                                        FilterSubject.WORKFLOW_BATCH
         :type filter_subject:   FilterSubject attribute
 
         :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
@@ -117,7 +91,7 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url.format(str(client_id), filter_subject)
+        url = self.alt_api_base_url.format(str(client_id), filter_subject)
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
 
@@ -127,30 +101,6 @@ class Filters(Subject):
         jsonified_response = json.loads(raw_response.text)
 
         return jsonified_response
-
-    def list_apprs3history_filters(self, client_id=None):
-
-        """
-        List App rs3  filters
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.APP_RS3_HISTORY, client_id)
-        except RequestFailed:
-            raise
-
-        return returned_response
 
     def list_application_filters(self, client_id=None):
 
@@ -198,7 +148,7 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def list_app_manual_finding_exploit_filters(self, client_id=None):
+    def list_app_manual_exploit_filters(self, client_id=None):
         """
         List application manual exploit filters
 
@@ -215,34 +165,10 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
 
         try:
-            returned_response = self.list_filters(FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT, client_id)
+            returned_response = self.list_filters(FilterSubject.APPLICATION_MANUAL_EXPLOIT, client_id)
         except RequestFailed:
             raise
         return returned_response
-
-    def list_app_manual_finding_report_filters(self, client_id=None):
-        """
-        List application manual filter filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.APPLICATION_MANUAL_FINDING_REPORT, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
 
     def list_app_url_filters(self, client_id=None):
         """
@@ -289,28 +215,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def list_asset_finding_trend_model_filters(self, client_id=None):
-        """
-        List asset finding trend model filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.ASSET_FINDING_TREND_MODEL, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def list_client_filters(self, client_id=None):
         """
         List client filters
@@ -329,28 +233,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.list_filters(FilterSubject.CLIENT, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_client_rs3_history_filters(self, client_id=None):
-        """
-        List client rs3 history filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.CLIENT_HOST_RS3_HISTORY, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -487,50 +369,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def list_host_manual_report_filters(self, client_id=None):
-        """
-        List host manual report filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.HOST_MANUAL_REPORT, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_multi_client_user_filters(self, client_id=None):
-        """
-        List multi client user filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.MULTI_CLIENT_USER, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def list_network_filters(self, client_id=None):
         """
         List network filters
@@ -571,28 +409,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.list_filters(FilterSubject.PATCH, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_rs_notification_filters(self, client_id=None):
-        """
-        List rs notification filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.RS_NOTIFICATIONS, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -685,153 +501,30 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def list_user_minimal_filters(self, client_id=None):
-        """
-        List user minimal filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.USER_MINIMAL, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_user_activity_filters(self, client_id=None):
-        """
-        List user activity filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.USER_ACTIVITY, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_vulnerability_filters(self, client_id=None):
-        """
-        List vulnerbility filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.VULNERABILITY, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_weakness_filters(self, client_id=None):
-        """
-        List weakness filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.WEAKNESS, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def list_workflow_batch_filters(self, client_id=None):
-        """
-        List workflow batch filters
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.list_filters(FilterSubject.WORKFLOW_BATCH, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def list_system_filters(self, filter_subject, client_id=None):
 
         """
         List System Filters.
 
         :param filter_subject:  Supported Subjects are:
-            FilterSubject.APP_RS3_HISTORY
-            FilterSubject.APPLICATION
-            FilterSubject.APPLICATION_FINDING
-            FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-            FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-            FilterSubject.APPLICATION_URL
-            FilterSubject.ASSESSMENT
-            FilterSubject.ASSET_FINDING_TREND_MODEL
-            FilterSubject.CLIENT
-            FilterSubject.CLIENT_HOST_RS3_HISTORY
-            FilterSubject.DATABASE
-            FilterSubject.DATABASE_FINDING
-            FilterSubject.GROUP
-            FilterSubject.HOST
-            FilterSubject.HOST_FINDING
-            FilterSubject.HOST_MANUAL_EXPLOIT
-            FilterSubject.HOST_MANUAL_REPORT
-            FilterSubject.MULTI_CLIENT_USER
-            FilterSubject.NETWORK
-            FilterSubject.PATCH
-            FilterSubject.RS_NOTIFICATIONS
-            FilterSubject.TAG
-            FilterSubject.UNIQUE_APPLICATION_FINDING
-            FilterSubject.UNIQUE_HOST_FINDING
-            FilterSubject.USER
-            FilterSubject.USER_MINIMAL
-            FilterSubject.USER_ACTIVITY
-            FilterSubject.VULNERABILITY
-            FilterSubject.WEAKNESS
-            FilterSubject.WORKFLOW_BATCH
-
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   str
 
         :param client_id:       Client ID
@@ -846,8 +539,8 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url =  self.alt_api_base_url.format(filter_subject)
-        print(url)
+        url = self.api_base_url.format(str(client_id)) + "/{}/filter".format(filter_subject)
+
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
         except RequestFailed:
@@ -862,38 +555,25 @@ class Filters(Subject):
         """
         Get a specific system filter.
 
-        :param filter_subject:  Supported Subjects are:  
-            FilterSubject.APP_RS3_HISTORY
-            FilterSubject.APPLICATION
-            FilterSubject.APPLICATION_FINDING
-            FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-            FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-            FilterSubject.APPLICATION_URL
-            FilterSubject.ASSESSMENT
-            FilterSubject.ASSET_FINDING_TREND_MODEL
-            FilterSubject.CLIENT
-            FilterSubject.CLIENT_HOST_RS3_HISTORY
-            FilterSubject.DATABASE
-            FilterSubject.DATABASE_FINDING
-            FilterSubject.GROUP
-            FilterSubject.HOST
-            FilterSubject.HOST_FINDING
-            FilterSubject.HOST_MANUAL_EXPLOIT
-            FilterSubject.HOST_MANUAL_REPORT
-            FilterSubject.MULTI_CLIENT_USER
-            FilterSubject.NETWORK
-            FilterSubject.PATCH
-            FilterSubject.RS_NOTIFICATIONS
-            FilterSubject.TAG
-            FilterSubject.UNIQUE_APPLICATION_FINDING
-            FilterSubject.UNIQUE_HOST_FINDING
-            FilterSubject.USER
-            FilterSubject.USER_MINIMAL
-            FilterSubject.USER_ACTIVITY
-            FilterSubject.VULNERABILITY
-            FilterSubject.WEAKNESS
-            FilterSubject.WORKFLOW_BATCH
-
+        :param filter_subject:  Supported Subjects are:
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   str
 
         :param filter_id:       Filter ID to get
@@ -911,7 +591,7 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url =  self.alt_api_base_url.format(filter_subject)+"/{}".format(str(filter_id))
+        url = self.api_base_url.format(str(client_id)) + "/{}/filter/{}".format(filter_subject, str(filter_id))
 
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
@@ -928,37 +608,24 @@ class Filters(Subject):
         Creates a new saved filter.
 
         :param filter_subject:  Supported Subjects are:
-                FilterSubject.APP_RS3_HISTORY
-                FilterSubject.APPLICATION
-                FilterSubject.APPLICATION_FINDING
-                FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-                FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-                FilterSubject.APPLICATION_URL
-                FilterSubject.ASSESSMENT
-                FilterSubject.ASSET_FINDING_TREND_MODEL
-                FilterSubject.CLIENT
-                FilterSubject.CLIENT_HOST_RS3_HISTORY
-                FilterSubject.DATABASE
-                FilterSubject.DATABASE_FINDING
-                FilterSubject.GROUP
-                FilterSubject.HOST
-                FilterSubject.HOST_FINDING
-                FilterSubject.HOST_MANUAL_EXPLOIT
-                FilterSubject.HOST_MANUAL_REPORT
-                FilterSubject.MULTI_CLIENT_USER
-                FilterSubject.NETWORK
-                FilterSubject.PATCH
-                FilterSubject.RS_NOTIFICATIONS
-                FilterSubject.TAG
-                FilterSubject.UNIQUE_APPLICATION_FINDING
-                FilterSubject.UNIQUE_HOST_FINDING
-                FilterSubject.USER
-                FilterSubject.USER_MINIMAL
-                FilterSubject.USER_ACTIVITY
-                FilterSubject.VULNERABILITY
-                FilterSubject.WEAKNESS
-                FilterSubject.WORKFLOW_BATCH
-                
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   str
 
         :param filter_name:     The name to use for the new filter
@@ -982,13 +649,14 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url.format(str(client_id),filter_subject)
+        url = self.alt_api_base_url.format(str(client_id), filter_subject)
 
         body = {
             "name": filter_name,
             "filters": filter_list,
             "shared": shared
         }
+
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url, body=body)
         except RequestFailed:
@@ -999,37 +667,6 @@ class Filters(Subject):
 
         return filter_id
 
-    def create_app_rs3_history_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved app rs3 history filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.APP_RS3_HISTORY, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-   
     def create_application_filter(self, filter_name, filter_list, shared=False, client_id=None):
         """
         Creates a new saved application filter.
@@ -1122,37 +759,6 @@ class Filters(Subject):
         except RequestFailed:
             raise
         return returned_response
-    
-    def create_application_manual_finding_report_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved application manual finding report filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.APPLICATION_MANUAL_FINDING_REPORT, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
 
     def create_application_url_filter(self, filter_name, filter_list, shared=False, client_id=None):
         """
@@ -1215,37 +821,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def create_asset_finding_trend_model_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved asset finding trend model filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.ASSET_FINDING_TREND_MODEL, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def create_client_filter(self, filter_name, filter_list, shared=False, client_id=None):
         """
         Creates a new saved client filter.
@@ -1272,36 +847,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.create(FilterSubject.CLIENT, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def create_client_host_rs3_history_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new client host rs3 history filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.CLIENT_HOST_RS3_HISTORY, filter_name, filter_list, shared, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -1488,66 +1033,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def create_host_manual_report_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved host manual report filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.HOST_MANUAL_REPORT, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def create_multi_client_user_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved multi client user filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.MULTI_CLIENT_USER, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def create_network_filter(self, filter_name, filter_list, shared=False, client_id=None):
         """
         Creates a new saved network filter.
@@ -1605,36 +1090,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.create(FilterSubject.PATCH, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-    
-    def create_rs_notifications_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved rs notifications filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.RS_NOTIFICATIONS, filter_name, filter_list, shared, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -1758,156 +1213,6 @@ class Filters(Subject):
         except RequestFailed:
             raise
         return returned_response
-    
-    def create_user_minimal_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved user minimal filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.USER_MINIMAL, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-    
-    def create_user_activity_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved user activity filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.USER_ACTIVITY, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-    
-    def create_vulnerability_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved client filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.VULNERABILITY, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def create_weakness_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved weakness filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.WEAKNESS, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def create_workflow_batch_filter(self, filter_name, filter_list, shared=False, client_id=None):
-        """
-        Creates a new saved workflow batch filter.
-
-        :param filter_name:     The name to use for the new filter
-        :type  filter_name:     str
-
-        :param filter_list:     A list of dictionaries containing the filter parameters.
-        :type  filter_list:     list
-
-        :param shared:          True/False reflecting whether or not this filter should be shared.
-        :type shared:           bool
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The ID of the new filter is returned.
-        :rtype:     int
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.create(FilterSubject.WORKFLOW_BATCH, filter_name, filter_list, shared, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
 
     def get_filter(self, filter_subject, filter_id, client_id=None):
 
@@ -1915,37 +1220,24 @@ class Filters(Subject):
         Gets the details for a saved filter.
 
         :param filter_subject:  Supported Subjects are:
-            FilterSubject.APP_RS3_HISTORY
-            FilterSubject.APPLICATION
-            FilterSubject.APPLICATION_FINDING
-            FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-            FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-            FilterSubject.APPLICATION_URL
-            FilterSubject.ASSESSMENT
-            FilterSubject.ASSET_FINDING_TREND_MODEL
-            FilterSubject.CLIENT
-            FilterSubject.CLIENT_HOST_RS3_HISTORY
-            FilterSubject.DATABASE
-            FilterSubject.DATABASE_FINDING
-            FilterSubject.GROUP
-            FilterSubject.HOST
-            FilterSubject.HOST_FINDING
-            FilterSubject.HOST_MANUAL_EXPLOIT
-            FilterSubject.HOST_MANUAL_REPORT
-            FilterSubject.MULTI_CLIENT_USER
-            FilterSubject.NETWORK
-            FilterSubject.PATCH
-            FilterSubject.RS_NOTIFICATIONS
-            FilterSubject.TAG
-            FilterSubject.UNIQUE_APPLICATION_FINDING
-            FilterSubject.UNIQUE_HOST_FINDING
-            FilterSubject.USER
-            FilterSubject.USER_MINIMAL
-            FilterSubject.USER_ACTIVITY
-            FilterSubject.VULNERABILITY
-            FilterSubject.WEAKNESS
-            FilterSubject.WORKFLOW_BATCH
-
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   FilterSubject attributes
 
         :param filter_id:       The filter ID to get details for.
@@ -1963,7 +1255,7 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
+        url = self.alt_api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
 
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
@@ -1973,30 +1265,6 @@ class Filters(Subject):
         jsonified_response = json.loads(raw_response.text)
 
         return jsonified_response
-
-    def get_app_rs3_history_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved app rs3 history filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.APP_RS3_HISTORY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
 
     def get_application_filter(self, filter_id, client_id=None):
         """
@@ -2070,31 +1338,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def get_application_manual_finding_report_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved application manual finding report filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-            , filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def get_application_url_filter(self, filter_id, client_id=None):
         """
         Gets the details for a saved application manual exploit filter.
@@ -2163,30 +1406,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.get_filter(FilterSubject.CLIENT, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_client_host_rs3_history_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved client host rs3 history filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.CLIENT_HOST_RS3_HISTORY, filter_id, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -2335,54 +1554,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def get_host_manual_report_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved host manual report filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.HOST_MANUAL_REPORT, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_multi_client_user_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved multi client user filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.MULTI_CLIENT_USER, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def get_network_filter(self, filter_id, client_id=None):
         """
         Gets the details for a saved network filter.
@@ -2526,128 +1697,6 @@ class Filters(Subject):
         except RequestFailed:
             raise
         return returned_response
-    
-    def get_user_minimal_filter(self, filter_id, client_id=None):
-        
-        """
-        Gets the details for a saved user minimal filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.USER_MINIMAL, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_user_activity_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved user activity filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.USER_ACTIVITY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_vulnerability_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved vulnerability filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.VULNERABILITY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_weakness_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved weakness filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.WEAKNESS, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def get_workflow_batch_filter(self, filter_id, client_id=None):
-        """
-        Gets the details for a saved workflow batch filter.
-
-        :param filter_id:       The filter ID to get details for.
-        :type  filter_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The JSON output from the platform is returned, listing the available filters.
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.get_filter(FilterSubject.WORKFLOW_BATCH, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
 
     def update(self, filter_subject, filter_id, client_id=None, **kwargs):
 
@@ -2655,39 +1704,24 @@ class Filters(Subject):
         Updates an existing saved filter.
 
         :param filter_subject:  Supported Subjects are:
-                                
-                FilterSubject.APP_RS3_HISTORY
-                FilterSubject.APPLICATION
-                FilterSubject.APPLICATION_FINDING
-                FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-                FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-                FilterSubject.APPLICATION_URL
-                FilterSubject.ASSESSMENT
-                FilterSubject.ASSET_FINDING_TREND_MODEL
-                FilterSubject.CLIENT
-                FilterSubject.CLIENT_HOST_RS3_HISTORY
-                FilterSubject.DATABASE
-                FilterSubject.DATABASE_FINDING
-                FilterSubject.GROUP
-                FilterSubject.HOST
-                FilterSubject.HOST_FINDING
-                FilterSubject.HOST_MANUAL_EXPLOIT
-                FilterSubject.HOST_MANUAL_REPORT
-                FilterSubject.MULTI_CLIENT_USER
-                FilterSubject.NETWORK
-                FilterSubject.PATCH
-                FilterSubject.RS_NOTIFICATIONS
-                FilterSubject.TAG
-                FilterSubject.UNIQUE_APPLICATION_FINDING
-                FilterSubject.UNIQUE_HOST_FINDING
-                FilterSubject.USER
-                FilterSubject.USER_MINIMAL
-                FilterSubject.USER_ACTIVITY
-                FilterSubject.VULNERABILITY
-                FilterSubject.WEAKNESS
-                FilterSubject.WORKFLOW_BATCH
-
-
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   FilterSubject attributes
 
         :param filter_id:       The filter ID to update.
@@ -2712,7 +1746,7 @@ class Filters(Subject):
 
         success = False
 
-        url = self.api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
+        url = self.alt_api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
 
         name = kwargs.get("name", None)
         filter_definition = kwargs.get("filter_definition", None)
@@ -2737,37 +1771,6 @@ class Filters(Subject):
         success = True
 
         return success
-
-    def update_app_rs3_history_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved app rs3 history filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.APP_RS3_HISTORY, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response 
 
     def update_application_filter(self, filter_id, client_id=None, **kwargs):
 
@@ -2859,38 +1862,7 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
 
         try:
-            returned_response = self.update(FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-    
-    def update_application_manual_finding_report_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved application manual finding report filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.APPLICATION_MANUAL_FINDING_REPORT, filter_id, client_id, **kwargs)
+            returned_response = self.update(FilterSubject.APPLICATION_MANUAL_EXPLOIT, filter_id, client_id, **kwargs)
         except (RequestFailed, ValueError):
             raise
         return returned_response
@@ -2956,37 +1928,6 @@ class Filters(Subject):
         except (RequestFailed, ValueError):
             raise
         return returned_response
-    
-    def update_asset_finding_trend_model_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved asset finding trend model filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.ASSET_FINDING_TREND_MODEL, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
 
     def update_client_filter(self, filter_id, client_id=None, **kwargs):
 
@@ -3015,37 +1956,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.update(FilterSubject.CLIENT, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
-    def update_client_host_rs3_history_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved client host rs3 history filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.CLIENT_HOST_RS3_HISTORY, filter_id, client_id, **kwargs)
         except (RequestFailed, ValueError):
             raise
         return returned_response
@@ -3235,68 +2145,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def update_host_manual_report_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved host manual report filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.HOST_MANUAL_REPORT, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-    
-    def update_multi_client_user_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved multi client user filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.MULTI_CLIENT_USER, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
     def update_network_filter(self, filter_id, client_id=None, **kwargs):
 
         """
@@ -3355,37 +2203,6 @@ class Filters(Subject):
 
         try:
             returned_response = self.update(FilterSubject.PATCH, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
-    def update_rs_notifications_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved rs notifications filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.RS_NOTIFICATIONS, filter_id, client_id, **kwargs)
         except (RequestFailed, ValueError):
             raise
         return returned_response
@@ -3483,10 +2300,10 @@ class Filters(Subject):
             raise
         return returned_response
 
-    def update_user_minimal_filter(self, filter_id, client_id=None, **kwargs):
+    def update_user_filter(self, filter_id, client_id=None, **kwargs):
 
         """
-        Updates an existing saved user minimal filter.
+        Updates an existing saved user filter.
 
         :param filter_id:   The filter ID to update.
         :type  filter_id:   int
@@ -3509,131 +2326,7 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
 
         try:
-            returned_response = self.update(FilterSubject.USER_MINIMAL, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-    
-    def update_user_activity_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved user activity filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.USER_ACTIVITY, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
-    def update_vulnerability_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved vulnerability filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.VULNERABILITY, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
-    def update_weakness_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved weakness filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.WEAKNESS, filter_id, client_id, **kwargs)
-        except (RequestFailed, ValueError):
-            raise
-        return returned_response
-
-    def update_workflow_batch_filter(self, filter_id, client_id=None, **kwargs):
-
-        """
-        Updates an existing saved workflow batch filter.
-
-        :param filter_id:   The filter ID to update.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :keyword name:                  A new name for the filter.  String.
-        :keyword filter_definition;     A list of dicts containing the new filter parameters.
-        :keyword shared:                True/false reflecting whether or not filter should be shared.  Boolean
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        :raises ValueError:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        try:
-            returned_response = self.update(FilterSubject.WORKFLOW_BATCH, filter_id, client_id, **kwargs)
+            returned_response = self.update(FilterSubject.USER, filter_id, client_id, **kwargs)
         except (RequestFailed, ValueError):
             raise
         return returned_response
@@ -3643,38 +2336,25 @@ class Filters(Subject):
         """
         Deletes a saved filter.
 
-        :param filter_subject:  Supported Subjects are:    
-                FilterSubject.APP_RS3_HISTORY
-                FilterSubject.APPLICATION
-                FilterSubject.APPLICATION_FINDING
-                FilterSubject.APPLICATION_MANUAL_FINDING_EXPLOIT
-                FilterSubject.APPLICATION_MANUAL_FINDING_REPORT
-                FilterSubject.APPLICATION_URL
-                FilterSubject.ASSESSMENT
-                FilterSubject.ASSET_FINDING_TREND_MODEL
-                FilterSubject.CLIENT
-                FilterSubject.CLIENT_HOST_RS3_HISTORY
-                FilterSubject.DATABASE
-                FilterSubject.DATABASE_FINDING
-                FilterSubject.GROUP
-                FilterSubject.HOST
-                FilterSubject.HOST_FINDING
-                FilterSubject.HOST_MANUAL_EXPLOIT
-                FilterSubject.HOST_MANUAL_REPORT
-                FilterSubject.MULTI_CLIENT_USER
-                FilterSubject.NETWORK
-                FilterSubject.PATCH
-                FilterSubject.RS_NOTIFICATIONS
-                FilterSubject.TAG
-                FilterSubject.UNIQUE_APPLICATION_FINDING
-                FilterSubject.UNIQUE_HOST_FINDING
-                FilterSubject.USER
-                FilterSubject.USER_MINIMAL
-                FilterSubject.USER_ACTIVITY
-                FilterSubject.VULNERABILITY
-                FilterSubject.WEAKNESS
-                FilterSubject.WORKFLOW_BATCH
-
+        :param filter_subject:  Supported Subjects are:
+                                FilterSubject.APPLICATION
+                                FilterSubject.APPLICATION_FINDING
+                                FilterSubject.APPLICATION_MANUAL_EXPLOIT
+                                FilterSubject.APPLICATION_URL
+                                FilterSubject.ASSESSMENT
+                                FilterSubject.CLIENT
+                                FilterSubject.DATABASE
+                                FilterSubject.DATABASE_FINDING
+                                FilterSubject.GROUP
+                                FilterSubject.HOST
+                                FilterSubject.HOST_FINDING
+                                FilterSubject.HOST_MANUAL_EXPLOIT
+                                FilterSubject.NETWORK
+                                FilterSubject.PATCH
+                                FilterSubject.TAG
+                                FilterSubject.UNIQUE_APPLICATION_FINDING
+                                FilterSubject.UNIQUE_HOST_FINDING
+                                FilterSubject.USER
         :type filter_subject:   FilterSubject attribute
 
         :param filter_id:       The filter ID to delete.
@@ -3692,7 +2372,7 @@ class Filters(Subject):
         if client_id is None:
             client_id = self._use_default_client_id()[0]
 
-        url = self.api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
+        url = self.alt_api_base_url.format(str(client_id), filter_subject) + "/{}".format(str(filter_id))
 
         try:
             self.request_handler.make_request(ApiRequestHandler.DELETE, url)
@@ -3702,30 +2382,6 @@ class Filters(Subject):
 
         return success
 
-    def delete_app_rs3_history_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved application filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.APP_RS3_HISTORY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-    
-    
     def delete_application_filter(self, filter_id, client_id=None):
         """
         Delete a saved application filter.
@@ -3748,7 +2404,6 @@ class Filters(Subject):
         except RequestFailed:
             raise
         return returned_response
-
 
     def delete_appfinding_filter(self, filter_id, client_id=None):
         """
@@ -3792,30 +2447,6 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
         try:
             returned_response = self.delete(FilterSubject.APPLICATION_MANUAL_EXPLOIT, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_application_manual_finding_report_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved application manual finding report filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.APPLICATION_MANUAL_FINDING_REPORT, filter_id, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -3866,30 +2497,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-
-    def delete_asset_finding_trend_model_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved asset finding trend model filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.ASSET_FINDING_TREND_MODEL, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def delete_client_filter(self, filter_id, client_id=None):
         """
         Delete a saved client filter.
@@ -3909,30 +2516,6 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
         try:
             returned_response = self.delete(FilterSubject.CLIENT, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_client_host_rs3_history_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved client host rs3 history filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.CLIENT_HOST_RS3_HISTORY, filter_id, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -4075,54 +2658,6 @@ class Filters(Subject):
             raise
         return returned_response
 
-
-    def delete_host_manual_report_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved host manual report filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.HOST_MANUAL_REPORT, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_muli_client_user_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved multi client user filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.MULTI_CLIENT_USER, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
     def delete_network_filter(self, filter_id, client_id=None):
         """
         Delete a saved network filter.
@@ -4165,30 +2700,6 @@ class Filters(Subject):
             client_id = self._use_default_client_id()[0]
         try:
             returned_response = self.delete(FilterSubject.PATCH, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_rs_notifications_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved rs notifications filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.RS_NOTIFICATIONS, filter_id, client_id)
         except RequestFailed:
             raise
         return returned_response
@@ -4284,125 +2795,6 @@ class Filters(Subject):
         except RequestFailed:
             raise
         return returned_response
-
-
-    def delete_user_minimal_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved user minimal filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.USER_MINIMAL, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_user_activity_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved user activity filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.USER_ACTIVITY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-
-    def delete_vulnerability_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved vulnerability filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.VULNERABILITY, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def delete_weakness_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved weakness filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.WEAKNESS, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
-    def delete_workflow_batch_filter(self, filter_id, client_id=None):
-        """
-        Delete a saved workflow batch filter.
-
-        :param filter_id:   The filter ID to delete.
-        :type  filter_id:   int
-
-        :param client_id:   Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:   int
-
-        :return:    True/False reflecting whether or not the operation was successful.
-        :rtype:     bool
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-        try:
-            returned_response = self.delete(FilterSubject.WORKFLOW_BATCH, filter_id, client_id)
-        except RequestFailed:
-            raise
-        return returned_response
-
 
 
 """

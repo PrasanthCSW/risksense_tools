@@ -420,107 +420,10 @@ class Assessments(Subject):
             raise
 
         return response
-    
-
-    def update_assessment_status(self, assessment_id,status, client_id=None):
-
-        """
-        Get the status of the assessment
-
-        :param assessment_id:       The assessment ID.
-        :type  assessment_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The jsonified data of the status
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/" + str(assessment_id) + "/status"
-
-        body= {
-                 "status": status.upper()
-              }
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url,body=body)
-        except RequestFailed:
-            raise
-
-        jsonified_data = json.loads(raw_response.text)
-
-        print(jsonified_data)
-
-    def get_assessment_filterfields(self, client_id=None):
-
-        """
-        List fields that can be filtered by in the search endpoint
-
-        :param assessment_id:       The assessment ID.
-        :type  assessment_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The jsonified data of the status
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/filter"
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        jsonified_data = json.loads(raw_response.text)
-
-        print(jsonified_data)
-
-    def get_assessment_history(self, assessment_id,client_id=None):
-
-        """
-        Get history of assessments
-
-        :param assessment_id:       The assessment ID.
-        :type  assessment_id:       int
-
-        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
-        :type  client_id:       int
-
-        :return:    The jsonified data of the status
-        :rtype:     dict
-
-        :raises RequestFailed:
-        """
-
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/" + str(assessment_id) + "/history"
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
-        except RequestFailed:
-            raise
-
-        jsonified_data = json.loads(raw_response.text)
-
-        print(jsonified_data)
 
 
 """
-   Copyright 2022 RiskSense, Inc.
+   Copyright 2021 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

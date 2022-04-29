@@ -59,9 +59,10 @@ class Clients(Subject):
             raise
 
         jsonified_response = json.loads(raw_response.text)
+
         return jsonified_response
 
-    def get_client_info(self, client_id=None):
+    def get_client_info(self, client_id):
 
         """
         Gets the details for a specific client ID.
@@ -74,10 +75,6 @@ class Clients(Subject):
 
         :raises RequestFailed:
         """
-
-        
-        if client_id is None:
-            client_id = self._use_default_client_id()[0]
 
         url = self.api_base_url + "/" + str(client_id)
 
