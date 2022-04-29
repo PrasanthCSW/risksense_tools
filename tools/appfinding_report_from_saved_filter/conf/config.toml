@@ -1,6 +1,6 @@
 
 # Update to reflect the URL you use when logging in to RiskSense
-platform_url = 'https://platform.risksense.com'
+platform_url = ''
 
 
 #  An API key generated for your user. This key will have the
@@ -16,7 +16,7 @@ saved_filter_name = 'My Saved Filter'
 
 
 #  The name of the file you would like the output written to.
-csv_output_filename = 'my_csv_report.csv'
+csv_output_filename = 'new_csv.csv'
 
 
 #  If you are a single-client user, leave this setting alone.
@@ -24,4 +24,4 @@ csv_output_filename = 'my_csv_report.csv'
 #  setting below, and specify the # the client ID that you
 #  wish to work with.
 
-#client_id = 12345
+client_id = 0

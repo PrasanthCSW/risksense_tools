@@ -10,6 +10,7 @@
 
 from .__exports import ExportFileType
 from .__exports import Exports
+from .__exports import ExportRowNumbers
 
 """
    Copyright 2019 RiskSense, Inc.

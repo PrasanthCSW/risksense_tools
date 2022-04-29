@@ -1,0 +1,13 @@
+platform_url = 'https://platform2.risksense.com'
+api_key='11ec67dc-ace2-f071-b01a-06a9a515001a:XjFOTFhzTyVEdyZfUk1Zb0NUeVNvQ1ZNKlBAXi0lZVpzJHh6N21IWmw4QWM3dE1iZzIwcHktRjBDdDExNzljcQ=='
+client_id=793
+connector_name="testingconnector"
+networkId=248644
+access_key="19beab1cd24049b75f723f4bc2463eb56597d29167f92524c5b4359e2d8cae1a"
+secret_key="1db6a6533303d8468bb2f608d6b0a003eafe22a98b7328eeb1470d6e1019bb34"
+maxdaystoretrieve= 30
+connector_url="https://cloud.tenable.com/"
+schedule_enabled=true
+schedule_type="DAILY"
+hourOfDay=0
+autoUrba=false

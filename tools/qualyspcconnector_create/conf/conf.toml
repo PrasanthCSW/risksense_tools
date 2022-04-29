@@ -1,0 +1,13 @@
+platform_url = 'https://platform.risksense.com'
+api_key=''
+client_id=1234
+connector_name="test"
+reportNamePrefix ="test"
+networkId=1234
+username=""
+password=""
+connector_url=""
+schedule_enabled=true
+schedule_type="DAILY"
+hourOfDay=10
+autoUrba=false
