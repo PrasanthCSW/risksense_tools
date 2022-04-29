@@ -10,6 +10,7 @@
 
 import json
 from ..__exports import ExportFileType
+from ..__exports import ExportRowNumbers
 from ...__subject import Subject
 from ..._params import *
 from ..._api_request_handler import *
@@ -31,6 +32,7 @@ class Hosts(Subject):
 
         self.subject_name = "host"
         Subject.__init__(self, profile, self.subject_name)
+
 
     def create(self, group_id, assessment_id, network_id, ip_address, hostname, subnet, disc_date, client_id=None, **kwargs):
 
@@ -89,7 +91,9 @@ class Hosts(Subject):
         :keyword cf_8:              str
         :keyword cf_9:              str
         :keyword cf_10:             str
-
+        :keyword am_1:              str
+        :keyword am_2:              str
+        :keyword am_3:              str
         :return:    The host ID on the platform is returned.
         :rtype:     int
 
@@ -128,7 +132,9 @@ class Hosts(Subject):
         cf_8 = kwargs.get("cf_8", None)
         cf_9 = kwargs.get("cf_9", None)
         cf_10 = kwargs.get("cf_10", None)
-
+        am_1 = kwargs.get("am_1", None)
+        am_2 = kwargs.get("am_2", None)
+        am_3 = kwargs.get("am_3", None)
         body = {
             "groupId": group_id,
             "assessmentId": assessment_id,
@@ -164,7 +170,10 @@ class Hosts(Subject):
                 "cf_7": cf_7,
                 "cf_8": cf_8,
                 "cf_9": cf_9,
-                "cf_10": cf_10
+                "cf_10": cf_10,
+                "am_1": am_1,
+                "am_2": am_2,
+                "am_3": am_3
             }
         }
 
@@ -317,6 +326,9 @@ class Hosts(Subject):
         :keyword cf_8:              str
         :keyword cf_9:              str
         :keyword cf_10:             str
+        :keyword am_1:              str
+        :keyword am_2:              str
+        :keyword am_3:              str
 
         :return:    The job ID
         :rtype:     int
@@ -354,6 +366,9 @@ class Hosts(Subject):
         cf_8 = kwargs.get("cf_8", None)
         cf_9 = kwargs.get("cf_9", None)
         cf_10 = kwargs.get("cf_10", None)
+        am_1 = kwargs.get("am_1", None)
+        am_2 = kwargs.get("am_2", None)
+        am_3 = kwargs.get("am_3", None)   
 
         body = {
             "filterRequest": {
@@ -384,7 +399,10 @@ class Hosts(Subject):
                 "cf_7": cf_7,
                 "cf_8": cf_8,
                 "cf_9": cf_9,
-                "cf_10": cf_10
+                "cf_10": cf_10,
+                "am_1": am_1,
+                "am_2": am_2,
+                "am_3": am_3 
             }
         }
 
@@ -628,43 +646,77 @@ class Hosts(Subject):
 
         return job_id
 
-    def export(self, search_filters, file_name, file_type=ExportFileType.CSV, comment="", client_id=None):
-
+    def getexporttemplate(self,client_id=None):
+        
         """
-        Initiates an export job on the platform for host(s) based on the provided filter(s).
-
-        :param search_filters:  A list of dictionaries containing filter parameters.
-        :type  search_filters:  list
-
-        :param file_name:       The file name to be assigned to the export.
-        :type  file_name:       str
-
-        :param file_type:       The file type for the export.  Options are ExportFileType.CSV,
-                                ExportFileType.XML, and ExportFileType.XLSX
-        :type  file_type:       str
-
-        :param comment:         Any comment wished to be associated with the export.
-        :type  comment:         str
+        Gets configurable export template for application findings.
 
         :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
         :type  client_id:       int
 
-        :return:    The job ID is returned.
+        :return:    The Exportable fields
+        :rtype:     list
+
+        :raises RequestFailed:
+        """
+
+        if client_id is None:
+            client_id = self._use_default_client_id()[0]
+
+        url = self.api_base_url.format(str(client_id)) + "/export/template"
+
+        try:
+            raw_response = self.request_handler.make_request(ApiRequestHandler.GET, url)
+        except RequestFailed:
+            raise
+
+        exportablefilter = json.loads(raw_response.text)
+
+        for i in range(len(exportablefilter['exportableFields'])):
+            for j in range(len(exportablefilter['exportableFields'][i]['fields'])):
+                if exportablefilter['exportableFields'][i]['fields'][j]['selected']==False:
+                    exportablefilter['exportableFields'][i]['fields'][j]['selected']=True
+
+        return exportablefilter['exportableFields']
+
+
+    def export(self, search_filters, file_name, row_count=ExportRowNumbers.ROW_ALL,file_type=ExportFileType.CSV, client_id=None):
+
+        """
+        Initiates an export job on the platform for application finding(s) based on the
+        provided filter(s).
+
+        :param search_filters:  A list of dictionaries containing filter parameters.
+        :type  search_filters:  list
+
+        :param file_name:       The name to be used for the exported file.
+        :type  file_name:       str
+
+        :param row_count:       No of rows to be exported. Possible options : (ExportRowNumbers.ROW_5000,ExportRowNumbers.ROW_10000,ExportRowNumbers.ROW_25000,ExportRowNumbers.ROW_50000",ExportRowNumbers.ROW_100000",ExportRowNumbers.ROW_ALL)
+        :type  row_count:       str
+
+        :param exportable_filter:       Exportable filter
+        :type  exportable_filter:       list
+        :param file_type:       File type to export.  ExportFileType.CSV, ExportFileType.XML, or ExportFileType.XLSX
+        :type  file_type:       str
+
+        :param client_id:       Client ID.  If an ID isn't passed, will use the profile's default Client ID.
+        :type  client_id:       int
+
+        :return:    The job ID in the platform from is returned.
         :rtype:     int
 
         :raises RequestFailed:
-        :raises ValueError:
         """
-
         func_args = locals()
+        func_args['exportable_filter']=self.getexporttemplate()
         func_args.pop('self')
-
+        print(func_args)
         if client_id is None:
             func_args['client_id'] = self._use_default_client_id()[1]
-
         try:
             export_id = self._export(self.subject_name, **func_args)
-        except (RequestFailed, ValueError):
+        except RequestFailed:
             raise
 
         return export_id
@@ -908,7 +960,6 @@ class Hosts(Subject):
             raise
 
         return response
-
 
 """
    Copyright 2021 RiskSense, Inc.

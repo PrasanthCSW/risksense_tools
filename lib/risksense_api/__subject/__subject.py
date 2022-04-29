@@ -3,7 +3,7 @@
 |  Name        :  __subject.py
 |  Description :  Subject
 |  Project     :  risksense_api
-|  Copyright   :  2021 RiskSense, Inc.
+|  Copyright   :  2022 RiskSense, Inc.
 |  License     :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 |
 ******************************************************************************************************************* """
@@ -191,24 +191,27 @@ class Subject:
 
         search_filters = kwargs.get('search_filters')
         file_type = kwargs.get('file_type')
-        comment = kwargs.get('comment')
         file_name = kwargs.get('file_name')
         client_id = kwargs.get('client_id')
-
+        row_count = kwargs.get('row_count')
+        exportable_filter = kwargs.get('exportable_filter')
         if file_type not in ["CSV", "XML", "XLSX"]:
             raise ValueError("Invalid file type. Type must be CSV, XML, or XLSX")
-
+        if row_count not in ["5000", "10000", "25000", "50000", "100000", "All"]:
+            raise ValueError("Invalid row count. Row count must be 5000, 10000, 25000, 50000, 100000 or ALL")
         url = self.profile.platform_url + "/api/v1/client/{}/{}/export".format(str(client_id), subject_name)
 
         body = {
+            "fileType": file_type,
+            "fileName": file_name,   
+            "noOfRows":row_count,         
             "filterRequest": {
                 "filters": search_filters
             },
-            "fileType": file_type,
-            "comment": comment,
-            "fileName": file_name
+            "exportableFields":exportable_filter
         }
-
+        with open('test.json','w') as f:
+            f.write(json.dumps(body))
         try:
             raw_response = self.request_handler.make_request(ApiRequestHandler.POST, url, body=body)
         except RequestFailed:
@@ -450,8 +453,9 @@ class Subject:
 
         jsonified_response = json.loads(raw_response.text)
 
-        return jsonified_response
 
+        return jsonified_response
+        
     def _search(self, subject, func_name, page_range, **func_args):
 
         """
@@ -510,6 +514,8 @@ class Subject:
                         items = data['_embedded'][subject + 'es']
                     elif subject == 'vulnerability':
                         items = data['_embedded']['vulnerabilities']
+                    elif subject == 'patch':
+                        items = data['_embedded']['patchRemediations']
                     else:
                         items = data['_embedded'][subject + 's']
                     for item in items:
@@ -533,6 +539,7 @@ class Subject:
             sort_reversal = False
 
         sorted_results = sorted(all_results, key=lambda k: k[sort_field], reverse=sort_reversal)
+
 
         return sorted_results
 
@@ -605,7 +612,7 @@ class Subject:
 
 
 """
-   Copyright 2021 RiskSense, Inc.
+   Copyright 2022 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

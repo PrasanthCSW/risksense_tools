@@ -1,16 +1,14 @@
 """ *******************************************************************************************************************
 |
 |  Name        :  __init__.py
-|  Description :  Exports
+|  Description :  Networks
 |  Project     :  risksense_api
 |  Copyright   :  2019 RiskSense, Inc.
 |  License     :  Apache-2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
 |
 ******************************************************************************************************************* """
 
-from .__exports import ExportFileType
-from .__exports import Exports
-from .__exports import ExportRowNumbers
+from .__notifications import Notifications
 
 """
    Copyright 2019 RiskSense, Inc.
