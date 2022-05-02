@@ -157,10 +157,25 @@ class Notifications(Subject):
                                addressDetails,verificationcode,client_id=None):
 
         """
-        Searches for and returns networks based on the provided filter(s) and other parameters.
+        Creates delivery channel for user based on the type of channel
 
-        :param search_filters:  A list of dictionaries containing filter parameters.
-        :type  search_filters:  list"""
+        :param channelname:       The name of the channel .
+        :type  channelname:       str
+        
+        :param channeltype:       The type of the delivery channel either email or other delivery types .
+        :type  channeltype:       str
+        
+        :param webhookcontentype: The type of webhook content .
+        :type  webhookcontentype: null
+        
+        :param addressdetails:    The address to where notifcations appear .
+        :type  addressdetails:    str
+        
+        :param verificationcode:  The verification code which will be send to your address .
+        :type  verificationcode:  int
+        
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int"""
 
         if client_id is None:
             client_id = self._use_default_client_id()[0]
@@ -189,11 +204,27 @@ class Notifications(Subject):
     def edit_delivery_channel(self,channelid, channelname, channeltype, webhookcontenttype,
                                addressDetails,disabled,shared,client_id=None):
 
+        """In development"""
         """
-        Searches for and returns networks based on the provided filter(s) and other parameters.
+        Edit delivery channel for user based on the type of channel
 
-        :param search_filters:  A list of dictionaries containing filter parameters.
-        :type  search_filters:  list"""
+        :param channelname:       The name of the channel .
+        :type  channelname:       str
+        
+        :param channeltype:       The type of the delivery channel either email or other delivery types .
+        :type  channeltype:       str
+        
+        :param webhookcontentype: The type of webhook content .
+        :type  webhookcontentype: null
+        
+        :param addressdetails:    The address to where notifcations appear .
+        :type  addressdetails:    str
+        
+        :param disabled:  choose enable or disable based on true or false.
+        :type  disabled:  bool
+        
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int"""
 
         if client_id is None:
             client_id = self._use_default_client_id()[0]
@@ -220,6 +251,19 @@ class Notifications(Subject):
         return jsonified_response
 
     def delete_delivery_channel(self,channelids,client_id=None):
+
+        """
+        Delete delivery channel for user
+
+        :param channelids:       The channel ids to delete.
+        :type  channelids:       int
+        
+        :param channeltype:      The client id , if client is none , takes default client id .
+        :type  channeltype:      int        
+
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -239,6 +283,19 @@ class Notifications(Subject):
         return jsonified_response
     
     def list_channel(self,order,client_id=None):
+
+        
+        """
+        Lists all delivery channels in  client
+
+        :param order:       The order either asc or desc on how the channels will populate.
+        :type  order:       str
+        
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+
+        """
         
         if client_id is None:
             client_id= self._use_default_client_id()[0]
@@ -255,6 +312,25 @@ class Notifications(Subject):
         return jsonified_response
 
     def send_verification_code(self,channelname,channeladdress,channeltype,client_id=None):
+        
+        """
+        Sends verification code to the user
+
+        :param channelname:       The name of the channel .
+        :type  channelname:       str
+        
+        :param channeltype:       The type of the delivery channel either email or other delivery types .
+        :type  channeltype:       str
+       
+        :param channel address:    The address to where verification code needs to be sent .
+        :type  channel address:    str
+        
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -281,6 +357,14 @@ class Notifications(Subject):
 
     def get_model(self, client_id=None):
 
+        """
+        Lists all projection models for notifications in  client
+        
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -295,6 +379,15 @@ class Notifications(Subject):
         return jsonified_response
 
     def search_filters(self, client_id=None):
+
+        """
+        Lists all filters for notifications in  client
+        
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -310,6 +403,18 @@ class Notifications(Subject):
         return jsonified_response
 
     def notification_search(self,filters,client_id=None):
+ 
+        """
+        Lists all notifications based on filters for client
+
+        :param filters:     The filters which needs to be applied to fetch notifications
+        :type  filters:     list
+        
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -337,6 +442,15 @@ class Notifications(Subject):
         return jsonified_response
 
     def search_fields(self,client_id=None):
+
+        """
+        Lists all quickfilters for rs notifications for client
+
+        :param client_id:   The client id , if client is none , takes default client id .
+        :type  client_id:   int        
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -363,6 +477,24 @@ class Notifications(Subject):
         return jsonified_response
     
     def enablenotification(self,id,channelname,channeltype,client_id=None):
+
+        """
+        Enables the delivery channel for notifications
+
+        :param id:       The id of the delivery channel .
+        :type  id:       str
+        
+        :param channelname:       The name of the channel .
+        :type  channelname:       str
+        
+        :param channeltype:       The type of the delivery channel either email or other delivery types .
+        :type  channeltype:       str
+
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int   
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -380,6 +512,24 @@ class Notifications(Subject):
         return jsonified_response
     
     def disablenotification(self,id,channelname,channeltype,client_id=None):
+
+        """
+        Disables the delivery channel for notifications
+
+        :param id:       The id of the delivery channel .
+        :type  id:       str
+        
+        :param channelname:       The name of the channel .
+        :type  channelname:       str
+        
+        :param channeltype:       The type of the delivery channel either email or other delivery types .
+        :type  channeltype:       str
+
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int   
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -394,37 +544,17 @@ class Notifications(Subject):
         jsonified_response = json.loads(raw_response.text)
 
         return jsonified_response
-
-    def edit_delivery_channel(self,id,channelname,channeltype,webhookcontenttype,disabled,shared,address,verification_code,client_id=None):
-        if client_id is None:
-            client_id= self._use_default_client_id()[0]
-
-        url = self.api_base_url.format(str(client_id)) + "/channel/admin"
-        body={
-                "id": id,
-                "channelName": channelname,
-                "channelType": channeltype,
-                "webhookContentType": webhookcontenttype,
-                "disabled": disabled,
-                "shared": shared,
-                "addressDetails": [
-                    {
-                    "address": address,
-                    "verification_code": verification_code
-                    }
-                ]
-                }
-
-        try:
-            raw_response = self.request_handler.make_request(ApiRequestHandler.PUT, url,body=body)
-        except RequestFailed:
-            raise
-
-        jsonified_response = json.loads(raw_response.text)
-
-        return jsonified_response
-    
+   
     def get_notifications(self,client_id=None):
+
+        """
+        Gets all notifications for the client
+
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int   
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
         
@@ -439,6 +569,10 @@ class Notifications(Subject):
 
     
     def list_channel_admin(self,order,client_id=None):
+        """
+        In testing
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -452,6 +586,18 @@ class Notifications(Subject):
         return jsonified_response
   
     def get_notification(self,notification_id,client_id=None):
+
+        """
+        Gets specific notification for the client
+
+        :param client id:         The notification id whose information is fetched .
+        :type  client id:         int   
+
+        :param client id:         The client id, if none, will select default client id .
+        :type  client id:         int   
+
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -465,6 +611,10 @@ class Notifications(Subject):
         return jsonified_response
 
     def get_delivery_channel_template(self,client_id=None):
+        """
+        In testing
+        """
+
         if client_id is None:
             client_id= self._use_default_client_id()[0]
 
@@ -481,7 +631,7 @@ class Notifications(Subject):
     
 
 """
-   Copyright 2021 RiskSense, Inc.
+   Copyright 2022 RiskSense, Inc.
    
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
