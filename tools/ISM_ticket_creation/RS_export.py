@@ -58,7 +58,7 @@ def get_tags(url,key,client,tag_prefix):
 
 ################################## Export findings using tag ##########################################
 
-def export_findings_create_ticket(platform, key, client, file_name,tag_name_list,tag_id_list,get_tag_data_RS,ism_url,ism_key,ism_attachment_url,post_tag,assignee_prefix,default_assignee,profile_link):
+def export_findings_create_ticket(platform, key, client, file_name,tag_name_list,tag_id_list,get_tag_data_RS,ism_url,ism_key,ism_attachment_url,post_tag,assignee_prefix,default_assignee,profile_link,tag_owner_id):
     
     success = False
     flag_AH = ''
@@ -74,7 +74,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
             assignee = assignee[0:2].upper() + assignee[2:].lower()
         else: 
             assignee = default_assignee
-            assignee_desc = "\nThe Findings are routed to default assignee : {0}".format(default_assignee)
+            assignee_desc = "\nThe Findings are routed to default assignee : {0}".format(assignee)
             assignee = assignee[0:2].upper() + assignee[2:].lower()
         #print("Assigning to", assignee)
 
@@ -228,7 +228,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
         print()
         Incident_num = ISM.incident_create(ism_url,ism_key,ism_attachment_url,final_directory,tag_name_list[i],flag_AH,assignee,assignee_desc,profile_link)
         
-        status,text = change_tag_name(platform,key,client,tag_id_list[i],Incident_num,post_tag)
+        status,text = change_tag_name(platform,key,client,tag_id_list[i],Incident_num,post_tag,tag_owner_id)
         print()
         if(status == 200 ):
             print("Change tag is done...Now , you have the tag {0} is renamed to ISM incident {1} in Risksense platform...\n".format(tag_name_list[i],Incident_num))
@@ -242,7 +242,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
         #time.sleep(30)
     return status        
             
-def change_tag_name(url,key,client,tag_id_list,incident_num,post_tag):
+def change_tag_name(url,key,client,tag_id_list,incident_num,post_tag,tag_owner_id):
 
     url = url+"/api/v1/client/"+ str(client) + "/admin/tag/"+ str(tag_id_list)
     
@@ -252,7 +252,7 @@ def change_tag_name(url,key,client,tag_id_list,incident_num,post_tag):
     # Already added when you pass json= but not when you pass data=
     # 'Content-Type': 'application/json',
 }
-    json_data = { 'fields': [ { 'uid': 'TAG_TYPE', 'value': 'CUSTOM', }, { 'uid': 'NAME', 'value': post_tag+ str(incident_num) , }, { 'uid': 'DESCRIPTION', 'value': 'Neurons Tag', }, { 'uid': 'OWNER', 'value': '9921', }, { 'uid': 'COLOR', 'value': '#648d9f', }, { 'uid': 'LOCKED', 'value': False, }, { 'uid': 'PROPAGATE_TO_ALL_FINDINGS', 'value': False, }, ], }
+    json_data = { 'fields': [ { 'uid': 'TAG_TYPE', 'value': 'CUSTOM', }, { 'uid': 'NAME', 'value': post_tag+ str(incident_num) , }, { 'uid': 'DESCRIPTION', 'value': 'Neurons Tag', }, { 'uid': 'OWNER', 'value': tag_owner_id, }, { 'uid': 'COLOR', 'value': '#648d9f', }, { 'uid': 'LOCKED', 'value': False, }, { 'uid': 'PROPAGATE_TO_ALL_FINDINGS', 'value': False, }, ], }
     try:
         response = requests.put(url, headers=headers, json=json_data)
     except Exception as e:
@@ -303,6 +303,7 @@ def main():
     assignee_prefix = configuration['ISM']['assignee_prefix']
     default_assignee = configuration['ISM']['default_assignee']
     profile_link = configuration['ISM']['profile_link']
+    tag_owner_id = configuration['platform']['tag_owner']
 
     tag_name_list,tag_id_list,get_tag_names = get_tags(rs_url,api_key,client_id,rs_tag_prefix)
     if(tag_name_list is None):
@@ -310,7 +311,7 @@ def main():
         logging.info("No tags present")
         
     file_name = file_name + '.zip'
-    status = export_findings_create_ticket(rs_url, api_key, client_id,file_name ,tag_name_list,tag_id_list,get_tag_names,ism_url,ism_key,ism_attachment_url,post_tag,assignee_prefix,default_assignee,profile_link)
+    status = export_findings_create_ticket(rs_url, api_key, client_id,file_name ,tag_name_list,tag_id_list,get_tag_names,ism_url,ism_key,ism_attachment_url,post_tag,assignee_prefix,default_assignee,profile_link,tag_owner_id)
     if(status == 200):
         path = os.path.join(os.getcwd(), str(date.today()) + "_" +  str(time_today))
         shutil.rmtree(path, ignore_errors=False, onerror=None)
