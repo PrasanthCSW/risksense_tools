@@ -37,7 +37,10 @@ import json
 import requests
 from datetime import datetime
 from datetime import timedelta
-from urllib.parse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 import pandas as pd
 from _datetime import date
 
@@ -275,7 +278,7 @@ def getLastRunId(branchId):
     ])
     if (debug >= 3): printCurl(endpoint, 'GET', params)
     response = session.get(endpoint, params=params)
-    if debug: print(response)
+    if debug: print(response.text)
     if response.status_code != 200: printError(response.json()['errors'][0])
 
     if response.json()['meta']['total'] == 0:
@@ -741,7 +744,7 @@ def getMainEvent(eventList, meLine):
     event_dct = {
         'mainevent_description': mainDescription,
         'support_description': supportDescription,
-        'mainevent_source': mainEventCode
+        'mainevent_source': str(mainEventCode)
     }
 
     return(event_dct)
@@ -790,7 +793,7 @@ def getIssues(projectId, branchId, runId, limit=MAX_LIMIT, filter=True, triage=F
     else: params['branch-id'] = branchId
     if runId is None:
         runId = getLastRunId(branchId)
-        print("Current RunId:\n",runId)
+        #print("Current RunId:\n",runId)
     # update params with optional user-specified filter
     if filter:
         params.update(filter)
@@ -977,7 +980,7 @@ def getIssues(projectId, branchId, runId, limit=MAX_LIMIT, filter=True, triage=F
         age = datetime.utcnow() - first_detected
         if (closed_date is not None): ttr = closed_date - first_detected
         else: ttr = first_detected - first_detected
-        Desc = [description,local_effect]
+        Desc = [description]
         # create the dictionary entry
         entry = {'projectId': projectId, 'branchId': branchId, \
              'issue-key': issueKey, 'finding-key': findingKey, \

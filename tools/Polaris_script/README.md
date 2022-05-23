@@ -1,55 +1,48 @@
-# polaris.bat
+#Overview
 
-This script is used to pull the data from Synopsys Polaris and push it to the Risksense Platform.
+This script polls the project data from Synopsys Polaris and ingests them all into Risksense Platform.
 
-# User inputs
+# conf/config_polaris.toml
 
-Polaris Token , Project Name , Branch Name , File name to get the results to be provided in config.txt file in order.
+[polaris]
+token = "" # Enter the API Token of polaris
+file = "file_test" Can be left as it is(not necessary to change , since its just a temporary file to get exported into)
 
-# config.txt 
+Example:
 
-"polaris token" -- Replace "polaris token" with the polaris token.</br>
-"project name" -- Replace "project name" with the project name.</br>
-"branch name" -- Replace "branch name" with the branch name.</br>
-"comparison branch name" -- This is optional, to be left blank if comparison not needed.(Replace <comparison branch name> with the comparison branch name).</br>
-"file_name" -- File name to which the data is exported to, from the Synopsys polaris.(Replace file_name with any name for the file, no extension is required)</br>
+[polaris]
+token = "sampleapikey"
+file = "file_test"
 
 
- * Example:
-  
-thisisthetoken1223421 </br>
-Centralcore.SM </br>
-master </br>
-SAST </br>
-file_test </br>
-  
-  
 # upload_to_platform-master_branch\conf\config.toml
 
-Enter the Risksense Platform URL and API key in config.toml file under "upload_to_platform-master_branch\conf" ; 
+Enter the Risksense Platform URL , API key and client ID in config.toml file under "upload_to_platform-master_branch\conf" ; 
 
-* https://platform4.risksense.com 
-* API Key - 'xxxx'   ---> to be generated in Risksense platform for a user.
-* Client ID - 213132 ( hovering over your user initials will provide the ID of the current client you are logged into )
-
+* platform = 'https://platform4.risksense.com' 
+* api-key = 'xxxx'   ---> to be generated in Risksense platform for a user.
+* client_id = 1373 ( Ivanti DevSecOps client )
+* network_id = 12345 --> Finding Network ID ; You can find the network id by using POST API (https://xxxx.risksense.com/api/v1/client/{client_id}/network) Json Body : {"name": "polaris","type": "IP"} , Header ; Key - x-api-key , Value - xxxx
 
 Once these values are entered, you can run the script as;
 
-# Usage 
+python main.py "option"
 
-polaris.bat "option"
-  
-  * Example : polaris.bat C
+"option" can be ;
+O - Opened , C - Closed , A - All 
 
-'option' can be , 
 
-* "O"(opened) or "C"(closed) , "A"(all) , "N"(New) , "F"(Fixed) , left blank(All)
+Example :
 
+* python main.py C
+* python main.py O
+
+ 
 ======================================================================================================================================
 
 Developed by;
 
-Prasanth Bharadhwaaj ,</br>
-Yugesh ,</br>
-Jai Balaji ,</br>
+Prasanth Bharadhwaaj ,
+Yugesh ,
+Jai Balaji ,
 Security Analyst - CSW.

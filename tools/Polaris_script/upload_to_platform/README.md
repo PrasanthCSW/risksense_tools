@@ -11,7 +11,6 @@
     - urllib3
     - requests
     - progressbar2
-    - zipfile
    
    `pip install -r requirements.txt`
 
@@ -103,7 +102,7 @@ usage: upload_to_platform.py [-h] [-p PLATFORM] [-a API_KEY] [-f FILES_FOLDER]
                              [--proxy_host PROXY_HOST]
                              [--proxy_port PROXY_PORT]
                              [--proxy_auth PROXY_AUTH]
-                             [--proxy_user PROXY_USER] [--proxy_pwd PROXY_PWD] [--git_user] [--repo_id] [--artifact-id] [--auth_token]
+                             [--proxy_user PROXY_USER] [--proxy_pwd PROXY_PWD]
 
 The following arguments can be used to override those in the config file:
 
@@ -124,33 +123,10 @@ optional arguments:
   --proxy_auth PROXY_AUTH                       Use proxy authentication?
   --proxy_user PROXY_USER                       Proxy username
   --proxy_pwd PROXY_PWD                         Proxy password
+
 ```
 
 Example -- overriding the network ID and scan file folder found in the config
 ```commandline
 python upload_to_platform.py -n 12345 -f /home/johndoe/nessus_files
 ```
-
-**Overall flow:**
-
-* The Github workflow is run everytime a developer is making changes to the repository.
-Before running the script , you will have to add the following to config.toml file.
-   * Update the platform field as necessary.  
-   * Add your API token.  
-   * If it is known, you can provide the ID of the desired network (not the network name), and the user 
-   will not be prompted to provide or find it.
-   * Additionally, if the desired Client ID is known, you can provide it in the config file, and the 
-   script will not ask the user about it.
-   * If desired, change the paths of the folders containing the files to process and log file.
-   * If you specify a custom path_to_files, ___be sure to create a subfolder named "archive" 
-   within the folder specified___.
-* Now,run the upload_to_platform.py.
-* The upload_to_platform will ask for some user inputs;
-   * Git user name
-   * Repository name
-   * Artifact ID
-   * Git Token
-* Please provide with the above details to download the artifact from Git repo.
-* The script will download the artifact with the specified artifact ID to the respective folder and starts to upload the artifact to the desired Risksense platform.
-
-
