@@ -1,4 +1,4 @@
-#Overview
+# Overview
 
 This script polls the project data from Synopsys Polaris and ingests them all into Risksense Platform.
 
