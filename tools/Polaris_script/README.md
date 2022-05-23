@@ -4,7 +4,7 @@ This script polls the project data from Synopsys Polaris and ingests them all in
 
 # conf/config_polaris.toml
 
-[polaris]
+[polaris]</br>
 token = "" # Enter the API Token of polaris</br>
 file = "file_test" Can be left as it is(not necessary to change , since its just a temporary file to get exported into)
 
