@@ -113,7 +113,8 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
             print(e)
             logging.error(e)
 
-
+        time.sleep(20)
+        
         if response and response.status_code == 200:
             print("Export request submitted successfully.")
             logging.info("Export request submitted successfully.")
