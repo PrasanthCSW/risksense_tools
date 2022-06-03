@@ -121,7 +121,7 @@ class UploadToPlatform:
         else:
             print(f"There were no files that were successfully uploaded.  Exiting.")
             print()
-            input("Hit ENTER to close.")
+            #input("Hit ENTER to close.")
             exit(1)
 
         #  Begin monitoring processing of the uploaded files until complete

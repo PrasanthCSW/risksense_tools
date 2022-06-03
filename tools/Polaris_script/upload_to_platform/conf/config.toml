@@ -12,6 +12,8 @@ files_folder = 'files_to_process'
 # If you update this, please use the absolute path to your desired folder.
 log_folder = 'logs'
 
+assessment_name = ''
+
 # Trigger URBA upon completion of upload processing.
 auto_urba = true
 
@@ -23,10 +25,18 @@ client_id =
 
 use_proxy = false
 
+
+#user_git = ''
+#repo_id = ''
+#artifact_id = 0
+#auth_token = ''	
+
 [proxy]
     host = ''
     port = 3128
     authentication = false
     user = ''
     password = ''
+	
+
 

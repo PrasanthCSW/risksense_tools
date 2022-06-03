@@ -1,17 +1,17 @@
-# Overview
+#Overview
 
 This script polls the project data from Synopsys Polaris and ingests them all into Risksense Platform.
 
 # conf/config_polaris.toml
 
-[polaris]</br>
-token = "" # Enter the API Token of polaris</br>
+[polaris]
+token = "" # Enter the API Token of polaris
 file = "file_test" Can be left as it is(not necessary to change , since its just a temporary file to get exported into)
 
 Example:
 
-[polaris]</br>
-token = "sampleapikey"</br>
+[polaris]
+token = "sampleapikey"
 file = "file_test"
 
 
@@ -42,7 +42,7 @@ Example :
 
 Developed by;
 
-Prasanth Bharadhwaaj ,</br>
-Yugesh ,</br>
-Jai Balaji ,</br>
+Prasanth Bharadhwaaj ,
+Yugesh ,
+Jai Balaji ,
 Security Analyst - CSW.
