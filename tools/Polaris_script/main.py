@@ -31,7 +31,6 @@ def read_config_file(filename):
 def get_all_projects(jwt):
 
     url = "https://ivanti.polaris.synopsys.com/api/common/v0/projects?page%5Blimit%5D=500&page%5Boffset%5D=0"
-
     payload={}
     headers = {
       'Authorization': 'Bearer ' + jwt
@@ -121,7 +120,6 @@ def getJwt(token):
 
 def getBranches_runs(branch_link,jwt):
     endpoint = branch_link + "?page%5Blimit%5D=500&page%5Boffset%5D=0"
-
     payload={}
     headers = {
       'Authorization': 'Bearer ' + jwt
@@ -166,9 +164,7 @@ if __name__ == '__main__':
     jwt = getJwt(token)
     url = "https://ivanti.polaris.synopsys.com"
     all_projects = get_all_projects(jwt)
-
-
-
+ 
     for j in range(len(all_projects["data"])):
         jwt = getJwt(token)
         file = configuration['polaris']['file']
@@ -229,3 +225,4 @@ if __name__ == '__main__':
         logging.info("\t| "+ pn[b] + " - " + bn[b])
             
 
+    
