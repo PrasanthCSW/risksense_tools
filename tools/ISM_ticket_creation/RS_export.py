@@ -144,7 +144,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
         print("Attempting to download your export file.")
         logging.info("Attempting to download your export file.")
         
-        time.sleep(10)
+        time.sleep(20)
         try:
             response = requests.get(url, headers=headers)
         except Exception as e:
@@ -171,7 +171,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
             exit(1)
         
         
-        wait_time = 20  # Seconds
+        wait_time = 30  # Seconds
         counter = 0
 
         while counter < wait_time:
@@ -306,10 +306,11 @@ def main():
     tag_owner_id = configuration['platform']['tag_owner']
 
     tag_name_list,tag_id_list,get_tag_names = get_tags(rs_url,api_key,client_id,rs_tag_prefix)
-    if(tag_name_list is None):
+    if not tag_name_list:
         print("No tags present")
         logging.info("No tags present")
-        
+        exit(0)
+    #print(tag_name_list)
     file_name = file_name + '.zip'
     status = export_findings_create_ticket(rs_url, api_key, client_id,file_name ,tag_name_list,tag_id_list,get_tag_names,ism_url,ism_key,ism_attachment_url,post_tag,assignee_prefix,default_assignee,profile_link,tag_owner_id)
     if(status == 200):
