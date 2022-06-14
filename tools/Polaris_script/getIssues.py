@@ -376,6 +376,7 @@ where SPEC is a comma delimited list of one or more of the following:
     # select what we want from the dataframe
     df = df[reportSpec]
     df['app_name'] = sys.argv[6]
+    df['App_branch'] =  sys.argv[6] + "-" + df['b_name']
     # display the report
     if args.csv: df.to_csv(sys.stdout)
     elif args.html: df.to_html(sys.stdout, escape=False)
