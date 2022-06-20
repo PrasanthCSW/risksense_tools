@@ -144,7 +144,7 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
         print("Attempting to download your export file.")
         logging.info("Attempting to download your export file.")
         
-        time.sleep(20)
+        time.sleep(30)
         try:
             response = requests.get(url, headers=headers)
         except Exception as e:
@@ -203,17 +203,11 @@ def export_findings_create_ticket(platform, key, client, file_name,tag_name_list
             os.replace("Assets.csv", final_directory+"/Assets_"+str(tag_name_list[i])+".csv")
             os.replace("Findings.csv", final_directory+"/Findings_"+str(tag_name_list[i])+".csv")
 
-           
-            with open(final_directory+"/Findings_"+str(tag_name_list[i])+".csv",'r') as in_file, open(final_directory+"/Ticket_Findings_"+str(tag_name_list[i])+".csv",'w') as out_file:
-  
-                seen = set()
-    
-                for line in in_file:
-                    if line in seen: 
-                        continue
-
-                    seen.add(line)
-                    out_file.write(line)
+            df = pd.read_csv(final_directory+"/Findings_"+str(tag_name_list[i])+".csv")
+            df = df.drop_duplicates()
+            #print(df)
+            df.to_csv(final_directory+"/Ticket_Findings_"+str(tag_name_list[i])+".csv")
+          
         else:
             print("There was an error downloading your export file from the platform.")
             logging.error("There was an error downloading your export file from the platform.")
