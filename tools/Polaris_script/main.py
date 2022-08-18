@@ -1,19 +1,14 @@
 #usr/bin/python
-import getIssues
+from datetime import datetime
 import os
 import sys
-import csv
 import shutil
 import toml
 import logging
-import argparse
 import requests
-from requests.structures import CaseInsensitiveDict
 import json
-import subprocess
-import datetime
 import glob
-
+import dateutil.parser
 
 pi,pe,pn,bi,be,bn = [],[],[],[],[],[]
 pic = pec = pnc = bic = bec = bnc = count = 0 
@@ -27,6 +22,7 @@ def read_config_file(filename):
         print("Wrong file or file path (or) Config file does not exist")
         logging.info("Wrong file or file path (or) Config file does not exist")
     return data
+
  
 def get_all_projects(jwt):
 
@@ -96,12 +92,6 @@ def extract_upload(Condition,token,project,branch,file):
         pic+=1
         bic+=1
         os.remove(str(file) +"_"+ str(count)+".csv")
-        '''if os.system(execution3) == 0:
-            flag = 1
-        else:
-            print("\nThere's something wrong in the Risksense config file... Please look into upload_to_platform\conf\config.toml")
-            logging.info("\nThere's something wrong in the Risksense config file... Please look into upload_to_platform\conf\config.toml")
-            exit(1)'''
     count += 1    
        
     return pi,pic,pe,pec,pn,pnc,bi,bic,be,bec,bn,bnc
@@ -132,7 +122,29 @@ def getBranches_runs(branch_link,jwt):
         logging.info("String could not be converted to JSON")
         return pi,pic,pe,pec,pn,pnc,bi,bic,be,bec,bn,bnc
     return json_data
+
+def dateCreated(projectId,branchId,jwt,baseUrl):
+    endpoint = baseUrl + '/api/jobs/v2/jobs/' 
+    headers = {
+    'accept': 'application/json',
+    'Authorization': 'Bearer ' + jwt
+}
+
+    params = {
+    'filter[jobs][status][state]': 'COMPLETED',
+    'filter[jobs][project][id]': projectId,
+    'filter[jobs][branch][id]': branchId,
+}
+
+    response = requests.request("GET",endpoint, params=params, headers=headers)
+   
+    json_data = json.loads(response.text)
     
+    if(len(json_data["data"])!=0):
+        return json_data["data"][0]["attributes"]["dateCreated"]
+    else:
+        return ''
+      
 
 def getbranchName(branchId,baseUrl,jwt):
     endpoint = baseUrl + '/api/common/v0/branches/' + branchId
@@ -150,7 +162,10 @@ def getbranchName(branchId,baseUrl,jwt):
     return json_data["data"]["attributes"]["name"]
     
 if __name__ == '__main__':
-    
+    delta = ''
+    analyzed_proj = []
+    analyzed_branch = []
+    Analyzed_dict = {}
     Condition = sys.argv[1]  
     log_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'log', 'polaris.log')
     for handler in logging.root.handlers[:]:
@@ -162,26 +177,56 @@ if __name__ == '__main__':
     configuration = read_config_file(conf_file)
     token = configuration['polaris']['token']
     jwt = getJwt(token)
+    
     url = "https://ivanti.polaris.synopsys.com"
     all_projects = get_all_projects(jwt)
- 
+    
     for j in range(len(all_projects["data"])):
         jwt = getJwt(token)
         file = configuration['polaris']['file']
         project = all_projects["data"][j]["attributes"]["name"]
+        project_id = str(all_projects["data"][j]["id"])
         branch_link = all_projects["data"][j]["relationships"]["branches"]["links"]["self"]
         all_branches = getBranches_runs(branch_link,jwt)
-        if(len(all_branches["data"])) == 0:
-            print("\nThe project {0} doesn't have any branches\n".format(project))    
-            
-        for k in range(len(all_branches["data"])):
         
+        if(len(all_branches["data"])) == 0:
+            print("\nThe project {0} doesn't have any branches\n".format(project))  
+            logging.info(("\nThe project {0} doesn't have any branches\n".format(project)))  
+
+        for k in range(len(all_branches["data"])):   
             branch_id = all_branches["data"][k]["id"]
-           
             branch_name = getbranchName(branch_id,url,jwt)
-            
-            pi,pic,pe,pec,pn,pnc,bi,bic,be,bec,bn,bnc = extract_upload(Condition,token,project,branch_name,file)
-            
+            dateCreated_json = str(dateCreated(project_id,branch_id,jwt,url))
+            print(str(dateCreated_json))
+            if(str(dateCreated_json) != ''):
+                d = dateutil.parser.parse(str(dateCreated_json))
+                job_date = d.strftime('%m/%d/%Y')
+                 
+                now = datetime.now()
+                date_time_str = now.strftime("%m/%d/%Y")
+                
+                d1 = datetime.strptime(date_time_str, "%m/%d/%Y")
+                d2  = datetime.strptime(job_date, "%m/%d/%Y")
+                delta = d1-d2
+                print(delta.days,type(delta)) 
+
+                if(int(delta.days) <= 2 or int(delta.days) == 0):
+                    analyzed_proj.append(project)
+                    analyzed_branch.append(branch_name)
+                    if project not in Analyzed_dict:
+                        Analyzed_dict[project] = list()
+                    Analyzed_dict[project].append(branch_name)
+                    
+                    print("Analyzed projects and branch",Analyzed_dict)
+                    
+                    pi,pic,pe,pec,pn,pnc,bi,bic,be,bec,bn,bnc = extract_upload(Condition,token,project,branch_name,file)
+                else:
+                    print("The project {0} and branch {1} wasnt analyzed for the last 2 days, Skipping...".format(project,branch_name))
+                    logging.info("The project {0} and branch {1} wasnt analyzed for the last 2 days, Skipping...".format(project,branch_name))    
+            else:
+                print("There might be no runs for the project {0} (or) a newly created project".format(project))
+                logging.info("There might be no runs for the project {0} (or) a newly created project".format(project))
+
     path = os.getcwd() + "/upload_to_platform/files_to_process"
     allFiles = glob.glob(path + "/*.csv")
     allFiles.sort()
@@ -212,7 +257,7 @@ if __name__ == '__main__':
 
     print("\n\nThe Number of Project-Branch combination that got exception : {0}".format(pec))
     logging.info("\n\nThe Number of Project-Branch combination that got exception : {0}".format(pec))
-    
+    logging.info("Analyzed project-branch combination are : {0}".format(Analyzed_dict))
     for a in range(len(pe)):
         print("\t| "+ pe[a] + " - " + be[a])
         logging.info("\t| "+ pe[a] + " - " + be[a])
