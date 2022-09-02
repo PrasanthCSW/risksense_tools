@@ -6,9 +6,17 @@ import simplejson as json
 import datetime
 import os
 import time
+import logging
 from requests.structures import CaseInsensitiveDict
 import sys
 
+
+log_file = os.path.join(os.path.abspath(
+    os.path.dirname(__file__)), 'log', 'Wazuh_automation.log')
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logging.basicConfig(filename=log_file, level=logging.DEBUG,
+                    format='%(levelname)s:  %(asctime)s > %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 ######################################################## Splunk query to extract the vulnerability data ########################################################
 
 headers = {
@@ -37,7 +45,7 @@ header =  ['Title','Agent ID','CVE','Description','CWE', 'Severity','Agent Name'
 r = requests.request("POST",url, headers=headers, data=data,verify=False, auth=('csw-api-user', 'QWq3jqQKjCyrw7CnktF7'),stream=True)
 
 #######################################################  Breaking the response into chunks  ######################################################################
-
+#print(r.status_code,r.json(),r.content,json_resp)
 r.raise_for_status()
 with open("Splunk_data.json", 'wb') as f:
     for chunk in r.iter_content(chunk_size=10000):
@@ -46,8 +54,11 @@ with open("Splunk_data.json", 'wb') as f:
 f.close()
 
 print("\nExtracting the {0} vulnerabilities from Splunk".format(sys.argv[1]))
-
+logging.info("\nExtracting the {0} vulnerabilities from Splunk dated {1} and {2} ".format((sys.argv[1]),str(today),str(time)))
 data_list=[]
+
+print("\n -- Reading the json chunk...")
+logging.info("\n -- Reading the json chunk...")
 
 with open('Splunk_data.json') as f:
      for jsonObj in f:
@@ -58,7 +69,8 @@ f.close()
 count=0
 
 ##################################################################  Writing it to a file ########################################################################################
-
+print("\n -- Writing to CSV file...")
+logging.info("\n -- Writing to CSV file...")
 with open('Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
     for splunk_data in data_list:
         string =  json.loads(str(splunk_data["result"]["_raw"]))
@@ -123,3 +135,6 @@ with open('Data'+ '_' + str(today) + str(time) + "_" +'.csv', 'a') as f:
         count += 1
         f.write("\n")
 f.close()
+
+
+
