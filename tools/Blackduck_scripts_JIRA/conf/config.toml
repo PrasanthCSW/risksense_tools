@@ -1,0 +1,10 @@
+[platform]
+platform = "" #platform4
+api_key = "" #api-key 
+client_ID =  #1332
+
+[JIRA]
+instance = "" #ivanti.atlassian.net
+user = "" #userid
+pass = "" #token
+connector_name = "" #connector name setup in Risksense
